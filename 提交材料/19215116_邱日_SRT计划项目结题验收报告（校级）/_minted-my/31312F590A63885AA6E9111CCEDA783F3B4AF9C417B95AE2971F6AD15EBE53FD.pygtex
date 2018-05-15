@@ -1,0 +1,11 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{k}{struct} \PYG{n}{TrapFrame}\PYG{p}{\PYGZob{}}
+\PYG{c+cm}{/*registers that pushed by \PYGZdq{}pushal\PYGZdq{},xxxesp is useless */}
+  \PYG{n}{u32} \PYG{n}{edi}\PYG{p}{,}\PYG{n}{esi}\PYG{p}{,}\PYG{n}{ebp}\PYG{p}{,}\PYG{n}{xxxesp}\PYG{p}{,}\PYG{n}{ebx}\PYG{p}{,}\PYG{n}{edx}\PYG{p}{,}\PYG{n}{ecx}\PYG{p}{,}\PYG{n}{eax}\PYG{p}{;}
+\PYG{c+cm}{/*below are defined by x86 hardware:eip cs .. eflags*/}
+  \PYG{n}{u32} \PYG{n}{err}\PYG{p}{;}\PYG{c+cm}{/*irq*/}
+  \PYG{n}{u32} \PYG{n}{eip}\PYG{p}{;}
+  \PYG{n}{u16} \PYG{n}{cs}\PYG{p}{;} \PYG{n}{u16} \PYG{n}{padding}\PYG{p}{;}
+  \PYG{n}{u32} \PYG{n}{eflags}\PYG{p}{;}
+\PYG{p}{\PYGZcb{};}
+\end{Verbatim}

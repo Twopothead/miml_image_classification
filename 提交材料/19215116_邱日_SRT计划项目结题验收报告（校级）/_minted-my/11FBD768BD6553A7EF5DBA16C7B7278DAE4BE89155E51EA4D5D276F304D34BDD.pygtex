@@ -1,0 +1,9 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+    参数
+    include\PYGZus{}top：是否保留顶层的全连接网络
+    weights：None代表随机初始化，即不加载预训练权重。\PYG{l+s+s1}{\PYGZsq{}imagenet\PYGZsq{}}代表加载预训练权重
+    input\PYGZus{}tensor：可填入Keras tensor作为模型的图像输出tensor
+    input\PYGZus{}shape：可选，仅当include\PYGZus{}top\PYG{o}{=}False有效，应为长为3的tuple，指明输入图片的shape，图片的宽高必须大于197，如\PYG{o}{(}\PYG{l+m}{200},200,3\PYG{o}{)}
+    pooling：当include\PYGZus{}top\PYG{o}{=}False时，该参数指定了池化方式。None代表不池化，最后一个卷积层的输出为4D张量。‘avg’代表全局平均池化，‘max’代表全局最大值池化。
+    classes：可选，图片分类的类别数，仅当include\PYGZus{}top\PYG{o}{=}True并且不加载预训练权重时可用。
+\end{Verbatim}

@@ -1,0 +1,6 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+    \PYG{n}{keras}\PYG{o}{.}\PYG{n}{applications}\PYG{o}{.}\PYG{n}{resnet50}\PYG{o}{.}\PYG{n}{ResNet50}\PYG{p}{(}\PYG{n}{include\PYGZus{}top}\PYG{o}{=}\PYG{n+nb+bp}{True}\PYG{p}{,} \PYG{n}{weights}\PYG{o}{=}\PYG{l+s+s1}{\PYGZsq{}imagenet\PYGZsq{}}\PYG{p}{,}
+                                    \PYG{n}{input\PYGZus{}tensor}\PYG{o}{=}\PYG{n+nb+bp}{None}\PYG{p}{,} \PYG{n}{input\PYGZus{}shape}\PYG{o}{=}\PYG{n+nb+bp}{None}\PYG{p}{,}
+                                    \PYG{n}{pooling}\PYG{o}{=}\PYG{n+nb+bp}{None}\PYG{p}{,}
+                                    \PYG{n}{classes}\PYG{o}{=}\PYG{l+m+mi}{1000}\PYG{p}{)}
+\end{Verbatim}

@@ -1,0 +1,6 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{k}{struct} \PYG{n}{dir\PYGZus{}entry}\PYG{p}{\PYGZob{}}
+	\PYG{n}{u32} \PYG{n}{inode}\PYG{p}{;}
+	\PYG{n}{u8} \PYG{n}{name}\PYG{p}{[}\PYG{n}{MAX\PYGZus{}NAME\PYGZus{}LEN}\PYG{p}{];}
+\PYG{p}{\PYGZcb{}}\PYG{n}{\PYGZus{}\PYGZus{}attribute\PYGZus{}\PYGZus{}}\PYG{p}{((}\PYG{n}{packed}\PYG{p}{));}
+\end{Verbatim}

@@ -1,0 +1,3 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{k}{struct} \PYG{n}{file} \PYG{n}{file\PYGZus{}table}\PYG{p}{[}\PYG{n}{NR\PYGZus{}FILE}\PYG{p}{];}
+\end{Verbatim}

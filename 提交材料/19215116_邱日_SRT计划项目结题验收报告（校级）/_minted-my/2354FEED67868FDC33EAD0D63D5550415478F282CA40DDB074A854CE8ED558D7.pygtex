@@ -1,0 +1,43 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{c+c1}{\PYGZsh{}这里的命令不是在Ubuntu中运行，而是在qemu虚拟机中使用}
+ls
+\PYG{n+nb}{cd} home
+\PYG{n+nb}{cd} qiuri
+\PYG{n+nb}{cd} /
+\PYG{n+nb}{cd} var
+ls
+\PYG{n+nb}{cd} /
+\PYG{n+nb}{cd} etc
+ls
+\PYG{n+nb}{cd} getty
+ls
+\PYG{n+nb}{cd} /
+mkdir dir1/dir2/dir3
+ls
+\PYG{n+nb}{cd} dir1/dir2/dir3
+ls
+\PYG{n+nb}{cd} ..
+ls
+clear
+\PYG{n+nb}{cd} /
+\PYG{n+nb}{help}
+\PYG{n+nb}{pwd}
+\PYG{n+nb}{cd} home/qiuri
+\PYG{n+nb}{pwd}
+info superblock
+info disk
+info grouping
+ls
+\PYG{n+nb}{cd} ..
+ls
+rmdir qiuri
+ls
+\PYG{n+nb}{cd} ..
+ls
+rmdir home
+ls
+cat hamlet.txt
+cat jane.txt
+ls
+rm hamlet.txt
+\end{Verbatim}

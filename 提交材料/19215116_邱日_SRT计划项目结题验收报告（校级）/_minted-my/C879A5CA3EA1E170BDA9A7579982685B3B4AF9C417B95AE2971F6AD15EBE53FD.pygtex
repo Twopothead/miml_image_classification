@@ -1,0 +1,4 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{k+kt}{char} \PYG{o}{*}\PYG{n+nf}{strtok}\PYG{p}{(}\PYG{k+kt}{char} \PYG{n}{s}\PYG{p}{[],} \PYG{k}{const} \PYG{k+kt}{char} \PYG{o}{*}\PYG{n}{delim}\PYG{p}{);}
+\PYG{c+c1}{//库函数strtok用法:分解字符串为一组字符串。s为要分解的字符串，delim为分隔符字符串。}
+\end{Verbatim}

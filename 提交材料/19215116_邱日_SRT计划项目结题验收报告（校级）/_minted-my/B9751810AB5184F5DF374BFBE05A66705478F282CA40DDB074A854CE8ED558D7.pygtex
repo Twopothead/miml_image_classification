@@ -1,0 +1,7 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{c+c1}{\PYGZsh{} 之前应该已安装grub2}
+sudo apt\PYGZhy{}get install gcc
+sudo apt\PYGZhy{}get install xorriso
+\PYG{c+c1}{\PYGZsh{} 安装xorriso 才能执行grub\PYGZhy{}mkrescue}
+sudo apt\PYGZhy{}get install qemu
+\end{Verbatim}

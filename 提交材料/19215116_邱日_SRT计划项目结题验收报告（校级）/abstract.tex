@@ -1,0 +1,81 @@
+\begin{center}
+	\zihao{3} \heiti	基于Keras深度学习框架的多标签图像分类研究	\end{center}
+% \begin{center}
+% 	\zihao{-4} \fangsong	计算机科学与技术专业学生 \quad 邱日\\	指导教师 \quad 顾兴健	\end{center}
+\begin{center}
+	\zihao{-4} \fangsong	项目编号：201710307010Y项目主持人：邱日 \quad  成员：周宽；秦天涯 \quad 邱日\\	指导教师 \quad 顾兴健	\end{center}
+
+
+% \zihao{5}
+% \addcontentsline{toc}{chapter}{摘要}
+% \noindent{\heiti 摘要：}{\songti 
+% 深度神经网络最近在很多计算机视觉的很多领域都取得了不俗的效果，特别是分类相关领域，后者包括多类别分类和多标签分类．
+% 在多标签分类问题中，一个图像可以同时属于几个不同的标签.因为我们的计算资源和实验经费都极其有限，要完全从头建立并训练
+% 出一个比较强大的分类器
+
+% 这里我们简单地把我们实验中用到的两个神经网络库介绍一下:TensorFlow 和 Keras, TensorFlow™ 是一个使用数据流图进行数值计算的开放源代码软件库。
+% 图中的节点代表数学运算，而图中的边则代表在这些节点之间传递的多维数组（张量）
+% } 
+
+% \addcontentsline{toc}{chapter}{关键词} 
+% \noindent{\heiti 关键词：}{\songti 多标签分类; 迁移学习; 预训练模型;深度残差网络;深度神经网络} %要具体•避免罕见缩写词和一般性词汇
+
+% \vspace{135pt}
+
+\begin{center}
+	\zihao{3}transfer learning for multi-label image classification based on Keras  \end{center}
+\begin{center}
+	\zihao{-4} Student majoring in  computer science and technology \quad Ri Qiu,Kuan Zhou,QTY\\Tutor\quad Xinjian Gu\end{center}
+
+\zihao{5}
+\addcontentsline{toc}{chapter}{Abstract}
+{\renewcommand\baselinestretch{1}\selectfont
+\noindent\textbf{Abstract: }
+Deep Neural Network has recently achieved outstanding performance in a variety of computer 
+vision tasks,especially classification related tasks,including multi-class classification 
+ and multi-label classification.In multi-label classification problems, an image is associated 
+ with a set of labels simultaneously.
+Due to our very limited compute resources and little money,it is almost impossible to 
+build and train a powerful image classification model totally from zero.
+However,by storing knowledge gained while solving one problem and applying it to a different
+but related problem, better results can be obtained, and this strategy is called transfer learning. 
+ResNet-50(deep Residual Networks) is a powerful residual learning framework,
+these residual networks are easier to optimize, and can gain accuracy from 
+considerably increased depth. Build and train a model with very little data 
+and still yield reasonable results is feasible with transfer learning and pre-trained
+models, namely ResNet-50.
+Building on prior work in this field, we do transfer learning with and without fine-tuning 
+as well as the training of a neural network model from scratch on a much smaller 
+multi-label image dataset.This multi-label image dataset is provided by NJU LAMDA,this dataset 
+contains 2000 natural scenes images.
+
+To address the above problem,we propose a novel deep transfer neural network based on 
+multi-label learning for classification tasks.The existing approaches tend to treat multi-label problems as those for multi-class 
+problems.Our model mainly consists of two sub-networks: the transfer learning network and the multi-label learning network.
+The transfer neural network is an extended ResNet-50 architecture.
+In data pre-processing stage, we convert 2000 images and their labels into tfrecord format(
+native file format used in Tensorflow allows programmers to shuffle, batch and split datasets with its 
+own functions).we shuffle and augment data,this helps prevent overfitting and help the 
+model generalize better. We use the bottleneck features of a pre-trained network, namely ResNet50, 
+which is pre-trained on the ImageNet dataset.Because the ImageNet dataset contains several nature scene classes
+, such as 'tree','desert','sea' and so on among its total of 1000 classes, this base model will
+already have learned features that are relevant to our multi-label classification problem under 
+natural scene. To further improve this base model's (pre-trained Resnet model) performance,
+we 'fine-tune' the last convolutional block of the ResNet model as well as the top-level classifier.
+Our experimentations with real-world datasets demonstrate the effectiveness of the proposed approach.
+
+Here we will simply introduce two neural network libraries that we used :TensorFlow and Keras.
+TensorFlow™ is an open source software library for high performance numerical computation. 
+Its flexible architecture allows easy deployment of computation across a variety of platforms.
+Keras is a high-level neural networks API, written in Python 
+and capable of running on top of TensorFlow, CNTK, or Theano. It was developed with a focus on enabling 
+fast experimentation. Keras enable us to go from idea to result with the least possible delay.
+
+\par}
+
+\vspace{-0.2\baselineskip}
+\addcontentsline{toc}{chapter}{Key words}
+\noindent\textbf{Key words: } Multi-label classification; transfer learning;pretrained model;ResNet;Keras;DNN 
+
+% \vspace{15pt}
+\clearpage

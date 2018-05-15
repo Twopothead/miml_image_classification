@@ -1,0 +1,10 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{n+nl}{asm\PYGZus{}all\PYGZus{}trap:}
+    \PYG{n+nf}{pushal}
+    \PYG{n+nf}{push} \PYG{n+nv}{\PYGZpc{}esp}
+    \PYG{n+nf}{call} \PYG{n+no}{irq\PYGZus{}handle}
+    \PYG{n+nf}{pop} \PYG{n+nv}{\PYGZpc{}esp}
+    \PYG{n+nf}{popal}
+    \PYG{n+nf}{add} \PYG{n+no}{\PYGZdl{}4}\PYG{p}{,}\PYG{n+nv}{\PYGZpc{}esp}
+    \PYG{n+nf}{iret}
+\end{Verbatim}

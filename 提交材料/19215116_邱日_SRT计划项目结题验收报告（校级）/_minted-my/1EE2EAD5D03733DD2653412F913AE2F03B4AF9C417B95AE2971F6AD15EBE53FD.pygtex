@@ -1,0 +1,11 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{k}{struct} \PYG{n}{GDT\PYGZus{}entry}
+\PYG{p}{\PYGZob{}}
+\PYG{n}{u16} \PYG{n}{limit1}\PYG{p}{;}      \PYG{c+cm}{/*0\PYGZhy{}15*/}
+\PYG{n}{u16} \PYG{n}{base1}\PYG{p}{;}       \PYG{c+cm}{/*16\PYGZhy{}31*/}
+\PYG{n}{u8} \PYG{n}{base2}\PYG{p}{;}        \PYG{c+cm}{/*32\PYGZhy{}39*/}
+\PYG{n}{u8} \PYG{n}{access}\PYG{p}{;}       \PYG{c+cm}{/*40\PYGZhy{}47*/}
+\PYG{n}{u8} \PYG{n}{granularity}\PYG{p}{;}  \PYG{c+cm}{/*48\PYGZhy{}55*/}
+\PYG{n}{u8} \PYG{n}{base3}\PYG{p}{;}        \PYG{c+cm}{/*56\PYGZhy{}63*/}
+\PYG{p}{\PYGZcb{}} \PYG{n}{\PYGZus{}\PYGZus{}attribute\PYGZus{}\PYGZus{}}\PYG{p}{((}\PYG{n}{packed}\PYG{p}{));}
+\end{Verbatim}

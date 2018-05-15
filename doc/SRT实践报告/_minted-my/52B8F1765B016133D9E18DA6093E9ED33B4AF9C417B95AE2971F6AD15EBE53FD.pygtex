@@ -1,0 +1,17 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{k+kt}{void} \PYG{n+nf}{init\PYGZus{}8253}\PYG{p}{()}
+\PYG{p}{\PYGZob{}}
+	\PYG{n}{outb}\PYG{p}{(}\PYG{n}{PIT\PYGZus{}COMMAND\PYGZus{}REG}\PYG{p}{,}\PYG{l+m+mh}{0x34}\PYG{p}{);}
+\PYG{c+cm}{/*bin(0x34)=\PYGZsq{}0b110100\PYGZsq{}= 00   11    010   0}
+\PYG{c+cm}{ *Channel 0 ,Access mode: lobyte/hibyte , Mode 2 (rate generator),16\PYGZhy{}bit binary}
+\PYG{c+cm}{ */}
+	\PYG{n}{outb}\PYG{p}{(}\PYG{n}{PIT\PYGZus{}CHANNEL0\PYGZus{}DATA\PYGZus{}PORT}\PYG{p}{,}\PYG{l+m+mh}{0x9c}\PYG{p}{);}\PYG{c+cm}{/*low byte*/}
+	\PYG{n}{outb}\PYG{p}{(}\PYG{n}{PIT\PYGZus{}CHANNEL0\PYGZus{}DATA\PYGZus{}PORT}\PYG{p}{,}\PYG{l+m+mh}{0x2e}\PYG{p}{);}\PYG{c+cm}{/*high byte*/}
+\PYG{c+cm}{/* 1193180/100 = 11930 ,100HZ =\PYGZgt{} a irq every 10ms}
+\PYG{c+cm}{ * 11930 = 0b 0010 1110 1001 1010,first write lower bits,then the higher}
+\PYG{c+cm}{ * see my guide.md and https://wiki.osdev.org/Programmable\PYGZus{}Interval\PYGZus{}Timer}
+\PYG{c+cm}{ */}
+	\PYG{n}{enable\PYGZus{}8253}\PYG{p}{();}
+	\PYG{n}{msg\PYGZus{}8253\PYGZus{}ok}\PYG{p}{();}
+\PYG{p}{\PYGZcb{}}
+\end{Verbatim}

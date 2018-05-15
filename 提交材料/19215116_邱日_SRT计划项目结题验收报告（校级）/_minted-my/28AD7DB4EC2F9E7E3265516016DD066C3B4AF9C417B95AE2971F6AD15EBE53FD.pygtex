@@ -1,0 +1,9 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{n}{Vx} \PYG{o}{=} \PYG{n}{xyindex}\PYG{o}{\PYGZpc{}}\PYG{l+m+mi}{80}\PYG{p}{;}
+\PYG{n}{Vy} \PYG{o}{=} \PYG{n}{xyindex}\PYG{o}{/}\PYG{l+m+mi}{80}\PYG{p}{;}
+\PYG{n}{u16} \PYG{n}{tmp} \PYG{o}{=} \PYG{p}{(}\PYG{n}{Vy}\PYG{o}{*}\PYG{l+m+mi}{80}\PYG{p}{)}\PYG{o}{+}\PYG{n}{Vx}\PYG{p}{;}
+\PYG{n}{outb}\PYG{p}{(}\PYG{l+m+mh}{0x3d4}\PYG{p}{,}\PYG{l+m+mh}{0x0f}\PYG{p}{);}
+\PYG{n}{outb}\PYG{p}{(}\PYG{l+m+mh}{0x3d5}\PYG{p}{,(}\PYG{n}{u8}\PYG{p}{)(}\PYG{n}{tmp} \PYG{o}{\PYGZam{}} \PYG{l+m+mh}{0xff}\PYG{p}{));}\PYG{c+cm}{/*cursor low port:reg15*/}
+\PYG{n}{outb}\PYG{p}{(}\PYG{l+m+mh}{0x3d4}\PYG{p}{,}\PYG{l+m+mh}{0x0e}\PYG{p}{);}
+\PYG{n}{outb}\PYG{p}{(}\PYG{l+m+mh}{0x3d5}\PYG{p}{,(}\PYG{n}{u8}\PYG{p}{)(} \PYG{p}{(}\PYG{n}{tmp} \PYG{o}{\PYGZgt{}\PYGZgt{}} \PYG{l+m+mi}{8}\PYG{p}{)} \PYG{o}{\PYGZam{}} \PYG{l+m+mh}{0xff}\PYG{p}{));}\PYG{c+cm}{/*cursor high port:reg14*/}
+\end{Verbatim}

@@ -1,0 +1,15 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{c+cp}{\PYGZsh{}pragma pack(1)}
+\PYG{k}{struct} \PYG{n}{GATE\PYGZus{}DESCRPTOR}\PYG{p}{\PYGZob{}}
+\PYG{n}{u16} \PYG{n+nl}{offset\PYGZus{}lowerbits}        \PYG{p}{:}\PYG{l+m+mi}{16}\PYG{p}{;}\PYG{c+c1}{// offset bits 0..15}
+\PYG{n}{u16} \PYG{n+nl}{selector}                \PYG{p}{:}\PYG{l+m+mi}{16}\PYG{p}{;}\PYG{c+c1}{// a code segment selector in GDT or LDT}
+\PYG{n}{u8}  \PYG{n+nl}{zero}                    \PYG{p}{:}\PYG{l+m+mi}{8} \PYG{p}{;}\PYG{c+c1}{// unused,set to 0}
+\PYG{c+c1}{// type and attributes, total u8 type\PYGZus{}attr;}
+\PYG{n}{u8}  \PYG{n+nl}{seg\PYGZus{}type}                \PYG{p}{:}\PYG{l+m+mi}{4} \PYG{p}{;}
+\PYG{n}{u8}  \PYG{n+nl}{storage}                 \PYG{p}{:}\PYG{l+m+mi}{1}\PYG{p}{;} \PYG{c+c1}{// set to 0 for interrupt and trap gates}
+\PYG{n}{u8}  \PYG{n+nl}{descr\PYGZus{}privilege\PYGZus{}level}   \PYG{p}{:}\PYG{l+m+mi}{2}\PYG{p}{;}
+\PYG{n}{u8}  \PYG{n+nl}{present}                 \PYG{p}{:}\PYG{l+m+mi}{1}\PYG{p}{;}
+\PYG{n}{u16} \PYG{n+nl}{offset\PYGZus{}higherbits}       \PYG{p}{:}\PYG{l+m+mi}{16}\PYG{p}{;}\PYG{c+c1}{// offset bits 16..31}
+\PYG{p}{\PYGZcb{};}
+\PYG{c+cp}{\PYGZsh{}pragma pack()}
+\end{Verbatim}

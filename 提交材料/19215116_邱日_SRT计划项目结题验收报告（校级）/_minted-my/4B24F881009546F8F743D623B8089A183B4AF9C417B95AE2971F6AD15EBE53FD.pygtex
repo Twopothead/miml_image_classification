@@ -1,0 +1,196 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{k+kt}{void} \PYG{n+nf}{rm}\PYG{p}{(}\PYG{k}{const} \PYG{k+kt}{char} \PYG{o}{*}\PYG{n}{name}\PYG{p}{,}\PYG{n}{u8} \PYG{n}{mode}\PYG{p}{)}
+\PYG{p}{\PYGZob{}}
+	\PYG{k+kt}{int} \PYG{n}{fd} \PYG{o}{=} \PYG{n}{open}\PYG{p}{(}\PYG{n}{name}\PYG{p}{);}\PYG{k}{if}\PYG{p}{(}\PYG{n}{fd}\PYG{o}{==\PYGZhy{}}\PYG{l+m+mi}{1}\PYG{p}{)}\PYG{k}{return}\PYG{p}{;}
+	\PYG{k+kt}{int} \PYG{n}{contents\PYGZus{}len} \PYG{o}{=} \PYG{n}{current}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{filp}\PYG{p}{[}\PYG{n}{fd}\PYG{p}{]}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{f\PYGZus{}inode}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{i\PYGZus{}size}\PYG{p}{;}
+	\PYG{k}{if}\PYG{p}{(} \PYG{n}{current}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{filp}\PYG{p}{[}\PYG{n}{fd}\PYG{p}{]}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{f\PYGZus{}inode}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{i\PYGZus{}size}\PYG{o}{==}\PYG{l+m+mi}{0}\PYG{p}{)\PYGZob{}}
+		\PYG{n}{kprintf}\PYG{p}{(}\PYG{l+s}{\PYGZdq{}}\PYG{l+s+se}{\PYGZbs{}n}\PYG{l+s}{ rm: \PYGZsq{}\PYGZpc{}s\PYGZsq{}: not a valid file.\PYGZdq{}}\PYG{p}{,}\PYG{n}{name}\PYG{p}{);}
+		\PYG{k}{return}\PYG{p}{;}
+	\PYG{p}{\PYGZcb{}}
+	\PYG{k}{if}\PYG{p}{(}\PYG{n}{current}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{filp}\PYG{p}{[}\PYG{n}{fd}\PYG{p}{]}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{f\PYGZus{}inode}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{i\PYGZus{}nlinks}\PYG{o}{!=}\PYG{l+m+mi}{0}\PYG{p}{)}
+		\PYG{n}{kprintf}\PYG{p}{(}\PYG{l+s}{\PYGZdq{}}\PYG{l+s+se}{\PYGZbs{}n}\PYG{l+s}{ rm: nlinks:\PYGZpc{}d\PYGZdq{}}\PYG{p}{,}\PYG{n}{current}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{filp}\PYG{p}{[}\PYG{n}{fd}\PYG{p}{]}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{f\PYGZus{}inode}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{i\PYGZus{}nlinks}\PYG{p}{);}
+	\PYG{n}{u16} \PYG{n}{ino} \PYG{o}{=} \PYG{n}{current}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{filp}\PYG{p}{[}\PYG{n}{fd}\PYG{p}{]}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{f\PYGZus{}inode}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{i\PYGZus{}ino}\PYG{p}{;}
+	\PYG{k+kt}{int} \PYG{n}{length} \PYG{o}{=} \PYG{n}{current}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{filp}\PYG{p}{[}\PYG{n}{fd}\PYG{p}{]}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{f\PYGZus{}inode}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{i\PYGZus{}size}\PYG{p}{;}
+	\PYG{n}{close}\PYG{p}{(}\PYG{n}{fd}\PYG{p}{);}
+	\PYG{k}{if}\PYG{p}{(}\PYG{n}{ino}\PYG{o}{==}\PYG{l+m+mi}{0}\PYG{p}{)} \PYG{n}{\PYGZus{}panic}\PYG{p}{(}\PYG{l+s}{\PYGZdq{} FBI WARNING:rm:i\PYGZus{}ino = 0 !!! \PYGZdq{}}\PYG{p}{);}\PYG{c+cm}{/* will destroy root directory */}
+\PYG{c+cm}{/* free blocks and then free inode,finally remove this record from the directory */}
+	\PYG{n}{u8} \PYG{n}{sector}\PYG{p}{[}\PYG{l+m+mi}{512}\PYG{p}{]}\PYG{o}{=}\PYG{p}{\PYGZob{}}\PYG{l+m+mi}{0}\PYG{p}{\PYGZcb{};}\PYG{k+kt}{int} \PYG{n}{buffer\PYGZus{}offset}\PYG{o}{=}\PYG{l+m+mi}{0}\PYG{p}{;}
+	\PYG{k+kt}{int} \PYG{n}{total\PYGZus{}sectors} \PYG{o}{=} \PYG{p}{(}\PYG{n}{length}\PYG{o}{+}\PYG{l+m+mi}{511}\PYG{p}{)}\PYG{o}{/}\PYG{l+m+mi}{512}\PYG{p}{;}
+	\PYG{k}{struct} \PYG{n}{m\PYGZus{}inode} \PYG{n}{rm\PYGZus{}inode}\PYG{p}{;}
+	\PYG{n}{iget}\PYG{p}{(}\PYG{o}{\PYGZam{}}\PYG{n}{rm\PYGZus{}inode}\PYG{p}{,}\PYG{n}{ino}\PYG{p}{);}
+
+	\PYG{n}{memset}\PYG{p}{(}\PYG{n}{sector}\PYG{p}{,}\PYG{l+m+mh}{0x00}\PYG{p}{,}\PYG{k}{sizeof}\PYG{p}{(}\PYG{n}{sector}\PYG{p}{));}
+	\PYG{k}{if}\PYG{p}{(}\PYG{n}{total\PYGZus{}sectors}\PYG{o}{\PYGZlt{}=}\PYG{l+m+mi}{7}\PYG{o}{*}\PYG{n}{SECTOR\PYGZus{}PER\PYGZus{}BLOCK}\PYG{p}{)\PYGZob{}}
+\PYG{c+cm}{/* @\PYGZsh{}0.1 zone[0\PYGZti{}6]: direct block 直接寻址,大概7kB*/}
+		\PYG{k}{for}\PYG{p}{(}\PYG{k+kt}{int} \PYG{n}{i}\PYG{o}{=}\PYG{l+m+mi}{0}\PYG{p}{;} \PYG{n}{i}\PYG{o}{\PYGZlt{}}\PYG{n}{total\PYGZus{}sectors}\PYG{p}{;} \PYG{n}{i}\PYG{o}{++}\PYG{p}{)\PYGZob{}}
+			\PYG{k+kt}{int} \PYG{n}{blk\PYGZus{}i} \PYG{o}{=} \PYG{n}{get\PYGZus{}zone\PYGZus{}blks}\PYG{p}{(}\PYG{n}{i}\PYG{o}{+}\PYG{l+m+mi}{1}\PYG{p}{)}\PYG{o}{\PYGZhy{}}\PYG{l+m+mi}{1}\PYG{p}{;}
+			\PYG{k}{if}\PYG{p}{(}\PYG{n}{i}\PYG{o}{\PYGZpc{}}\PYG{l+m+mi}{2}\PYG{o}{==}\PYG{l+m+mi}{0}\PYG{p}{)\PYGZob{}}
+				\PYG{n}{IDE\PYGZus{}write\PYGZus{}sector}\PYG{p}{((}\PYG{k+kt}{void} \PYG{o}{*}\PYG{p}{)}\PYG{o}{\PYGZam{}}\PYG{n}{sector}\PYG{p}{,} \PYG{n}{DATA\PYGZus{}BLK\PYGZus{}NR\PYGZus{}TO\PYGZus{}SECTOR\PYGZus{}NR}\PYG{p}{(}\PYG{n}{rm\PYGZus{}inode}\PYG{p}{.}\PYG{n}{i\PYGZus{}zone}\PYG{p}{[}\PYG{n}{blk\PYGZus{}i}\PYG{p}{]));}
+			\PYG{p}{\PYGZcb{}}\PYG{k}{else}\PYG{p}{\PYGZob{}}
+				\PYG{n}{IDE\PYGZus{}write\PYGZus{}sector}\PYG{p}{((}\PYG{k+kt}{void} \PYG{o}{*}\PYG{p}{)}\PYG{o}{\PYGZam{}}\PYG{n}{sector}\PYG{p}{,} \PYG{n}{DATA\PYGZus{}BLK\PYGZus{}NR\PYGZus{}TO\PYGZus{}SECTOR\PYGZus{}NR}\PYG{p}{(}\PYG{n}{rm\PYGZus{}inode}\PYG{p}{.}\PYG{n}{i\PYGZus{}zone}\PYG{p}{[}\PYG{n}{blk\PYGZus{}i}\PYG{p}{])}\PYG{o}{+}\PYG{l+m+mi}{1}\PYG{p}{);}
+				\PYG{k}{if}\PYG{p}{(}\PYG{n}{rm\PYGZus{}inode}\PYG{p}{.}\PYG{n}{i\PYGZus{}zone}\PYG{p}{[}\PYG{n}{blk\PYGZus{}i}\PYG{p}{]}\PYG{o}{!=}\PYG{l+m+mi}{0}\PYG{p}{)}\PYG{n}{free\PYGZus{}block}\PYG{p}{(}\PYG{n}{rm\PYGZus{}inode}\PYG{p}{.}\PYG{n}{i\PYGZus{}zone}\PYG{p}{[}\PYG{n}{blk\PYGZus{}i}\PYG{p}{]);}
+			\PYG{p}{\PYGZcb{}}
+		\PYG{p}{\PYGZcb{}}
+	\PYG{p}{\PYGZcb{}}\PYG{k}{else} \PYG{k}{if}\PYG{p}{(}\PYG{n}{total\PYGZus{}sectors}\PYG{o}{\PYGZlt{}=}\PYG{l+m+mi}{7}\PYG{o}{*}\PYG{n}{SECTOR\PYGZus{}PER\PYGZus{}BLOCK}\PYG{o}{+}\PYG{l+m+mi}{512}\PYG{o}{*}\PYG{n}{SECTOR\PYGZus{}PER\PYGZus{}BLOCK}\PYG{p}{)\PYGZob{}}
+\PYG{c+cm}{/* @\PYGZsh{}1.1 zone[0\PYGZti{}6]: direct block 直接寻址,大概7kB*/}
+		\PYG{k}{for}\PYG{p}{(}\PYG{k+kt}{int} \PYG{n}{i}\PYG{o}{=}\PYG{l+m+mi}{0}\PYG{p}{;} \PYG{n}{i}\PYG{o}{\PYGZlt{}}\PYG{l+m+mi}{7}\PYG{o}{*}\PYG{n}{SECTOR\PYGZus{}PER\PYGZus{}BLOCK}\PYG{p}{;} \PYG{n}{i}\PYG{o}{++}\PYG{p}{)\PYGZob{}}
+			\PYG{k+kt}{int} \PYG{n}{blk\PYGZus{}i} \PYG{o}{=} \PYG{n}{get\PYGZus{}zone\PYGZus{}blks}\PYG{p}{(}\PYG{n}{i}\PYG{o}{+}\PYG{l+m+mi}{1}\PYG{p}{)}\PYG{o}{\PYGZhy{}}\PYG{l+m+mi}{1}\PYG{p}{;}
+			\PYG{k}{if}\PYG{p}{(}\PYG{n}{i}\PYG{o}{\PYGZpc{}}\PYG{l+m+mi}{2}\PYG{o}{==}\PYG{l+m+mi}{0}\PYG{p}{)\PYGZob{}}
+				\PYG{n}{IDE\PYGZus{}write\PYGZus{}sector}\PYG{p}{((}\PYG{k+kt}{void} \PYG{o}{*}\PYG{p}{)}\PYG{o}{\PYGZam{}}\PYG{n}{sector}\PYG{p}{,} \PYG{n}{DATA\PYGZus{}BLK\PYGZus{}NR\PYGZus{}TO\PYGZus{}SECTOR\PYGZus{}NR}\PYG{p}{(}\PYG{n}{rm\PYGZus{}inode}\PYG{p}{.}\PYG{n}{i\PYGZus{}zone}\PYG{p}{[}\PYG{n}{blk\PYGZus{}i}\PYG{p}{]));}
+			\PYG{p}{\PYGZcb{}}\PYG{k}{else}\PYG{p}{\PYGZob{}}
+				\PYG{n}{IDE\PYGZus{}write\PYGZus{}sector}\PYG{p}{((}\PYG{k+kt}{void} \PYG{o}{*}\PYG{p}{)}\PYG{o}{\PYGZam{}}\PYG{n}{sector}\PYG{p}{,} \PYG{n}{DATA\PYGZus{}BLK\PYGZus{}NR\PYGZus{}TO\PYGZus{}SECTOR\PYGZus{}NR}\PYG{p}{(}\PYG{n}{rm\PYGZus{}inode}\PYG{p}{.}\PYG{n}{i\PYGZus{}zone}\PYG{p}{[}\PYG{n}{blk\PYGZus{}i}\PYG{p}{])}\PYG{o}{+}\PYG{l+m+mi}{1}\PYG{p}{);}
+				\PYG{k}{if}\PYG{p}{(}\PYG{n}{rm\PYGZus{}inode}\PYG{p}{.}\PYG{n}{i\PYGZus{}zone}\PYG{p}{[}\PYG{n}{blk\PYGZus{}i}\PYG{p}{]}\PYG{o}{!=}\PYG{l+m+mi}{0}\PYG{p}{)}\PYG{n}{free\PYGZus{}block}\PYG{p}{(}\PYG{n}{rm\PYGZus{}inode}\PYG{p}{.}\PYG{n}{i\PYGZus{}zone}\PYG{p}{[}\PYG{n}{blk\PYGZus{}i}\PYG{p}{]);}
+			\PYG{p}{\PYGZcb{}}
+		\PYG{p}{\PYGZcb{}}
+\PYG{c+cm}{/*  \PYGZsh{}1.2 zone[7]:   single indirect block 一次间址,大概五百kB*/}
+		\PYG{n}{u8} \PYG{n}{two\PYGZus{}sectors}\PYG{p}{[}\PYG{l+m+mi}{1024}\PYG{p}{]}\PYG{o}{=}\PYG{p}{\PYGZob{}}\PYG{l+m+mi}{0}\PYG{p}{\PYGZcb{};}\PYG{c+cm}{/*load indexs in zone[7] to memory \PYGZsq{}two\PYGZus{}sectors\PYGZsq{}*/}
+		\PYG{n}{IDE\PYGZus{}read\PYGZus{}sector}\PYG{p}{((}\PYG{k+kt}{void} \PYG{o}{*}\PYG{p}{)}\PYG{n}{two\PYGZus{}sectors}\PYG{p}{,} \PYG{n}{DATA\PYGZus{}BLK\PYGZus{}NR\PYGZus{}TO\PYGZus{}SECTOR\PYGZus{}NR}\PYG{p}{(}\PYG{n}{rm\PYGZus{}inode}\PYG{p}{.}\PYG{n}{i\PYGZus{}zone}\PYG{p}{[}\PYG{l+m+mi}{7}\PYG{p}{]));}
+		\PYG{n}{IDE\PYGZus{}read\PYGZus{}sector}\PYG{p}{((}\PYG{k+kt}{void} \PYG{o}{*}\PYG{p}{)(}\PYG{n}{two\PYGZus{}sectors} \PYG{o}{+} \PYG{l+m+mi}{512}\PYG{p}{),} \PYG{n}{DATA\PYGZus{}BLK\PYGZus{}NR\PYGZus{}TO\PYGZus{}SECTOR\PYGZus{}NR}\PYG{p}{(}\PYG{n}{rm\PYGZus{}inode}\PYG{p}{.}\PYG{n}{i\PYGZus{}zone}\PYG{p}{[}\PYG{l+m+mi}{7}\PYG{p}{])}\PYG{o}{+}\PYG{l+m+mi}{1}\PYG{p}{);}
+		\PYG{n}{u16} \PYG{o}{*} \PYG{n}{pzone} \PYG{o}{=}\PYG{p}{(}\PYG{n}{u16} \PYG{o}{*}\PYG{p}{)}\PYG{o}{\PYGZam{}}\PYG{n}{two\PYGZus{}sectors}\PYG{p}{;}\PYG{c+cm}{/* that\PYGZsq{}s right */}
+
+		\PYG{k}{for}\PYG{p}{(}\PYG{k+kt}{int} \PYG{n}{i} \PYG{o}{=} \PYG{l+m+mi}{7}\PYG{o}{*}\PYG{n}{SECTOR\PYGZus{}PER\PYGZus{}BLOCK}\PYG{p}{;}\PYG{n}{i}\PYG{o}{\PYGZlt{}}\PYG{n}{total\PYGZus{}sectors}\PYG{p}{;}\PYG{n}{i}\PYG{o}{++}\PYG{p}{)\PYGZob{}}\PYG{c+c1}{//[7*2+1,7*2+512*2]}
+			\PYG{k+kt}{int} \PYG{n}{blk\PYGZus{}i} \PYG{o}{=} \PYG{n}{get\PYGZus{}zone\PYGZus{}blks}\PYG{p}{(}\PYG{n}{i}\PYG{o}{+}\PYG{l+m+mi}{1}\PYG{p}{)}\PYG{o}{\PYGZhy{}}\PYG{l+m+mi}{1}\PYG{p}{;}
+			\PYG{n}{u16} \PYG{n}{zone\PYGZus{}index} \PYG{o}{=} \PYG{n}{pzone}\PYG{p}{[}\PYG{n}{blk\PYGZus{}i}\PYG{o}{\PYGZhy{}}\PYG{l+m+mi}{7}\PYG{p}{];}\PYG{c+cm}{/*zone[0\PYGZti{}6]*/}
+\PYG{c+cm}{/* MAKE SURE that zone\PYGZus{}index!=0. assert(zone\PYGZus{}index!=0)*/}
+			\PYG{k}{if}\PYG{p}{(}\PYG{n}{zone\PYGZus{}index}\PYG{o}{==}\PYG{l+m+mi}{0}\PYG{p}{)} \PYG{p}{\PYGZob{}}
+				\PYG{n}{\PYGZus{}panic}\PYG{p}{(}\PYG{l+s}{\PYGZdq{}FBI WARNNING:rm:zone\PYGZus{}index should not be zero!!!\PYGZdq{}}\PYG{p}{);}\PYG{c+cm}{/* will destory root directory!*/}
+			\PYG{p}{\PYGZcb{}}
+			\PYG{k}{if}\PYG{p}{(}\PYG{n}{i}\PYG{o}{\PYGZpc{}}\PYG{l+m+mi}{2}\PYG{o}{==}\PYG{l+m+mi}{0}\PYG{p}{)\PYGZob{}}
+					\PYG{n}{IDE\PYGZus{}write\PYGZus{}sector}\PYG{p}{((}\PYG{k+kt}{void} \PYG{o}{*}\PYG{p}{)}\PYG{o}{\PYGZam{}}\PYG{n}{sector}\PYG{p}{,} \PYG{n}{DATA\PYGZus{}BLK\PYGZus{}NR\PYGZus{}TO\PYGZus{}SECTOR\PYGZus{}NR}\PYG{p}{(}\PYG{n}{zone\PYGZus{}index}\PYG{p}{));}
+			\PYG{p}{\PYGZcb{}}\PYG{k}{else}\PYG{p}{\PYGZob{}}
+					\PYG{n}{IDE\PYGZus{}write\PYGZus{}sector}\PYG{p}{((}\PYG{k+kt}{void} \PYG{o}{*}\PYG{p}{)}\PYG{o}{\PYGZam{}}\PYG{n}{sector}\PYG{p}{,} \PYG{n}{DATA\PYGZus{}BLK\PYGZus{}NR\PYGZus{}TO\PYGZus{}SECTOR\PYGZus{}NR}\PYG{p}{(}\PYG{n}{zone\PYGZus{}index}\PYG{p}{)}\PYG{o}{+}\PYG{l+m+mi}{1}\PYG{p}{);}
+					\PYG{k}{if}\PYG{p}{(}\PYG{n}{zone\PYGZus{}index}\PYG{o}{!=}\PYG{l+m+mi}{0}\PYG{p}{)}\PYG{n}{free\PYGZus{}block}\PYG{p}{(}\PYG{n}{zone\PYGZus{}index}\PYG{p}{);}
+			\PYG{p}{\PYGZcb{}}
+		\PYG{p}{\PYGZcb{}}
+
+		\PYG{k}{if}\PYG{p}{(}\PYG{n}{rm\PYGZus{}inode}\PYG{p}{.}\PYG{n}{i\PYGZus{}zone}\PYG{p}{[}\PYG{l+m+mi}{7}\PYG{p}{]}\PYG{o}{!=}\PYG{l+m+mi}{0}\PYG{p}{)}\PYG{n}{free\PYGZus{}inode}\PYG{p}{(}\PYG{n}{rm\PYGZus{}inode}\PYG{p}{.}\PYG{n}{i\PYGZus{}zone}\PYG{p}{[}\PYG{l+m+mi}{7}\PYG{p}{]);}
+	\PYG{p}{\PYGZcb{}}
+	\PYG{k}{else} \PYG{k}{if}\PYG{p}{(}\PYG{n}{total\PYGZus{}sectors}\PYG{o}{\PYGZlt{}=}\PYG{l+m+mi}{7}\PYG{o}{*}\PYG{n}{SECTOR\PYGZus{}PER\PYGZus{}BLOCK}\PYG{o}{+}\PYG{l+m+mi}{512}\PYG{o}{*}\PYG{n}{SECTOR\PYGZus{}PER\PYGZus{}BLOCK}\PYG{o}{+}\PYG{l+m+mi}{512}\PYG{o}{*}\PYG{l+m+mi}{512}\PYG{o}{*}\PYG{n}{SECTOR\PYGZus{}PER\PYGZus{}BLOCK}\PYG{p}{)\PYGZob{}}
+\PYG{c+cm}{/* @\PYGZsh{}2.1 zone[0\PYGZti{}6]:  direct block 直接寻址,大概7kB*/}
+		\PYG{n}{kprintf}\PYG{p}{(}\PYG{l+s}{\PYGZdq{}}\PYG{l+s+se}{\PYGZbs{}n}\PYG{l+s}{  rm: removing direct blocks of file \PYGZsq{}\PYGZpc{}s\PYGZsq{}.\PYGZdq{}}\PYG{p}{,}\PYG{n}{name}\PYG{p}{);}
+		\PYG{k}{for}\PYG{p}{(}\PYG{k+kt}{int} \PYG{n}{i}\PYG{o}{=}\PYG{l+m+mi}{0}\PYG{p}{;} \PYG{n}{i}\PYG{o}{\PYGZlt{}}\PYG{l+m+mi}{7}\PYG{o}{*}\PYG{n}{SECTOR\PYGZus{}PER\PYGZus{}BLOCK}\PYG{p}{;} \PYG{n}{i}\PYG{o}{++}\PYG{p}{)\PYGZob{}}
+				\PYG{k+kt}{int} \PYG{n}{blk\PYGZus{}i} \PYG{o}{=} \PYG{n}{get\PYGZus{}zone\PYGZus{}blks}\PYG{p}{(}\PYG{n}{i}\PYG{o}{+}\PYG{l+m+mi}{1}\PYG{p}{)}\PYG{o}{\PYGZhy{}}\PYG{l+m+mi}{1}\PYG{p}{;}
+				\PYG{k}{if}\PYG{p}{(}\PYG{n}{i}\PYG{o}{\PYGZpc{}}\PYG{l+m+mi}{2}\PYG{o}{==}\PYG{l+m+mi}{0}\PYG{p}{)\PYGZob{}}
+					\PYG{n}{IDE\PYGZus{}write\PYGZus{}sector}\PYG{p}{((}\PYG{k+kt}{void} \PYG{o}{*}\PYG{p}{)}\PYG{o}{\PYGZam{}}\PYG{n}{sector}\PYG{p}{,} \PYG{n}{DATA\PYGZus{}BLK\PYGZus{}NR\PYGZus{}TO\PYGZus{}SECTOR\PYGZus{}NR}\PYG{p}{(}\PYG{n}{rm\PYGZus{}inode}\PYG{p}{.}\PYG{n}{i\PYGZus{}zone}\PYG{p}{[}\PYG{n}{blk\PYGZus{}i}\PYG{p}{]));}
+				\PYG{p}{\PYGZcb{}}\PYG{k}{else}\PYG{p}{\PYGZob{}}
+					\PYG{n}{IDE\PYGZus{}write\PYGZus{}sector}\PYG{p}{((}\PYG{k+kt}{void} \PYG{o}{*}\PYG{p}{)}\PYG{o}{\PYGZam{}}\PYG{n}{sector}\PYG{p}{,} \PYG{n}{DATA\PYGZus{}BLK\PYGZus{}NR\PYGZus{}TO\PYGZus{}SECTOR\PYGZus{}NR}\PYG{p}{(}\PYG{n}{rm\PYGZus{}inode}\PYG{p}{.}\PYG{n}{i\PYGZus{}zone}\PYG{p}{[}\PYG{n}{blk\PYGZus{}i}\PYG{p}{])}\PYG{o}{+}\PYG{l+m+mi}{1}\PYG{p}{);}
+					\PYG{k}{if}\PYG{p}{(}\PYG{n}{rm\PYGZus{}inode}\PYG{p}{.}\PYG{n}{i\PYGZus{}zone}\PYG{p}{[}\PYG{n}{blk\PYGZus{}i}\PYG{p}{]}\PYG{o}{!=}\PYG{l+m+mi}{0}\PYG{p}{)}\PYG{n}{free\PYGZus{}block}\PYG{p}{(}\PYG{n}{rm\PYGZus{}inode}\PYG{p}{.}\PYG{n}{i\PYGZus{}zone}\PYG{p}{[}\PYG{n}{blk\PYGZus{}i}\PYG{p}{]);}
+				\PYG{p}{\PYGZcb{}}
+		\PYG{p}{\PYGZcb{}}
+\PYG{c+cm}{/*  \PYGZsh{}2.2 zone[7]  :  single indirect block 一次间址,大概五百kB*/}
+		\PYG{n}{kprintf}\PYG{p}{(}\PYG{l+s}{\PYGZdq{}}\PYG{l+s+se}{\PYGZbs{}n}\PYG{l+s}{  rm: removing single indirect blocks of file \PYGZsq{}\PYGZpc{}s\PYGZsq{}.\PYGZdq{}}\PYG{p}{,}\PYG{n}{name}\PYG{p}{);}
+		\PYG{n}{u8} \PYG{n}{two\PYGZus{}sectors}\PYG{p}{[}\PYG{l+m+mi}{1024}\PYG{p}{]}\PYG{o}{=}\PYG{p}{\PYGZob{}}\PYG{l+m+mi}{0}\PYG{p}{\PYGZcb{};}\PYG{c+cm}{/*load indexs in zone[7] to memory \PYGZsq{}two\PYGZus{}sectors\PYGZsq{}*/}
+		\PYG{n}{IDE\PYGZus{}read\PYGZus{}sector}\PYG{p}{((}\PYG{k+kt}{void} \PYG{o}{*}\PYG{p}{)}\PYG{n}{two\PYGZus{}sectors}\PYG{p}{,} \PYG{n}{DATA\PYGZus{}BLK\PYGZus{}NR\PYGZus{}TO\PYGZus{}SECTOR\PYGZus{}NR}\PYG{p}{(}\PYG{n}{rm\PYGZus{}inode}\PYG{p}{.}\PYG{n}{i\PYGZus{}zone}\PYG{p}{[}\PYG{l+m+mi}{7}\PYG{p}{]));}
+		\PYG{n}{IDE\PYGZus{}read\PYGZus{}sector}\PYG{p}{((}\PYG{k+kt}{void} \PYG{o}{*}\PYG{p}{)(}\PYG{n}{two\PYGZus{}sectors} \PYG{o}{+} \PYG{l+m+mi}{512}\PYG{p}{),} \PYG{n}{DATA\PYGZus{}BLK\PYGZus{}NR\PYGZus{}TO\PYGZus{}SECTOR\PYGZus{}NR}\PYG{p}{(}\PYG{n}{rm\PYGZus{}inode}\PYG{p}{.}\PYG{n}{i\PYGZus{}zone}\PYG{p}{[}\PYG{l+m+mi}{7}\PYG{p}{])}\PYG{o}{+}\PYG{l+m+mi}{1}\PYG{p}{);}
+		\PYG{n}{u16} \PYG{o}{*} \PYG{n}{pzone} \PYG{o}{=}\PYG{p}{(}\PYG{n}{u16} \PYG{o}{*}\PYG{p}{)}\PYG{o}{\PYGZam{}}\PYG{n}{two\PYGZus{}sectors}\PYG{p}{;}\PYG{c+cm}{/* that\PYGZsq{}s right */}
+
+		\PYG{k}{for}\PYG{p}{(}\PYG{k+kt}{int} \PYG{n}{i} \PYG{o}{=} \PYG{l+m+mi}{7}\PYG{o}{*}\PYG{n}{SECTOR\PYGZus{}PER\PYGZus{}BLOCK}\PYG{p}{;}\PYG{n}{i}\PYG{o}{\PYGZlt{}}\PYG{l+m+mi}{7}\PYG{o}{*}\PYG{n}{SECTOR\PYGZus{}PER\PYGZus{}BLOCK}\PYG{o}{+}\PYG{l+m+mi}{512}\PYG{o}{*}\PYG{n}{SECTOR\PYGZus{}PER\PYGZus{}BLOCK}\PYG{p}{;}\PYG{n}{i}\PYG{o}{++}\PYG{p}{)\PYGZob{}}\PYG{c+c1}{//[7*2+1,7*2+512*2]}
+			\PYG{k+kt}{int} \PYG{n}{blk\PYGZus{}i} \PYG{o}{=} \PYG{n}{get\PYGZus{}zone\PYGZus{}blks}\PYG{p}{(}\PYG{n}{i}\PYG{o}{+}\PYG{l+m+mi}{1}\PYG{p}{)}\PYG{o}{\PYGZhy{}}\PYG{l+m+mi}{1}\PYG{p}{;}
+			\PYG{n}{u16} \PYG{n}{zone\PYGZus{}index} \PYG{o}{=} \PYG{n}{pzone}\PYG{p}{[}\PYG{n}{blk\PYGZus{}i}\PYG{o}{\PYGZhy{}}\PYG{l+m+mi}{7}\PYG{p}{];}\PYG{c+cm}{/*zone[0\PYGZti{}6]*/}
+\PYG{c+cm}{/* MAKE SURE that zone\PYGZus{}index!=0. assert(zone\PYGZus{}index!=0)*/}
+			\PYG{k}{if}\PYG{p}{(}\PYG{n}{zone\PYGZus{}index}\PYG{o}{==}\PYG{l+m+mi}{0}\PYG{p}{)} \PYG{p}{\PYGZob{}}
+				\PYG{n}{\PYGZus{}panic}\PYG{p}{(}\PYG{l+s}{\PYGZdq{}FBI WARNING:read:zone\PYGZus{}index should not be zero!!!\PYGZdq{}}\PYG{p}{);}\PYG{c+cm}{/* will destory root directory!*/}
+			\PYG{p}{\PYGZcb{}}
+			\PYG{k}{if}\PYG{p}{(}\PYG{n}{i}\PYG{o}{\PYGZpc{}}\PYG{l+m+mi}{2}\PYG{o}{==}\PYG{l+m+mi}{0}\PYG{p}{)\PYGZob{}}
+					\PYG{n}{IDE\PYGZus{}write\PYGZus{}sector}\PYG{p}{((}\PYG{k+kt}{void} \PYG{o}{*}\PYG{p}{)}\PYG{o}{\PYGZam{}}\PYG{n}{sector}\PYG{p}{,} \PYG{n}{DATA\PYGZus{}BLK\PYGZus{}NR\PYGZus{}TO\PYGZus{}SECTOR\PYGZus{}NR}\PYG{p}{(}\PYG{n}{zone\PYGZus{}index}\PYG{p}{));}
+			\PYG{p}{\PYGZcb{}}\PYG{k}{else}\PYG{p}{\PYGZob{}}
+					\PYG{n}{IDE\PYGZus{}write\PYGZus{}sector}\PYG{p}{((}\PYG{k+kt}{void} \PYG{o}{*}\PYG{p}{)}\PYG{o}{\PYGZam{}}\PYG{n}{sector}\PYG{p}{,} \PYG{n}{DATA\PYGZus{}BLK\PYGZus{}NR\PYGZus{}TO\PYGZus{}SECTOR\PYGZus{}NR}\PYG{p}{(}\PYG{n}{zone\PYGZus{}index}\PYG{p}{)}\PYG{o}{+}\PYG{l+m+mi}{1}\PYG{p}{);}
+					\PYG{k}{if}\PYG{p}{(}\PYG{n}{zone\PYGZus{}index}\PYG{o}{!=}\PYG{l+m+mi}{0}\PYG{p}{)}\PYG{n}{free\PYGZus{}block}\PYG{p}{(}\PYG{n}{zone\PYGZus{}index}\PYG{p}{);}
+			\PYG{p}{\PYGZcb{}}
+		\PYG{p}{\PYGZcb{}}
+		\PYG{k}{for}\PYG{p}{(}\PYG{k+kt}{int} \PYG{n}{i}\PYG{o}{=}\PYG{l+m+mi}{0}\PYG{p}{;}\PYG{n}{i}\PYG{o}{\PYGZlt{}}\PYG{l+m+mi}{512}\PYG{p}{;}\PYG{n}{i}\PYG{o}{++}\PYG{p}{)\PYGZob{}}
+			\PYG{k}{if}\PYG{p}{(}\PYG{n}{pzone}\PYG{p}{[}\PYG{n}{i}\PYG{p}{]}\PYG{o}{!=}\PYG{l+m+mi}{0}\PYG{p}{)}
+				\PYG{n}{free\PYGZus{}block}\PYG{p}{(}\PYG{n}{pzone}\PYG{p}{[}\PYG{n}{i}\PYG{p}{]);}
+		\PYG{p}{\PYGZcb{}}
+		\PYG{k}{if}\PYG{p}{(}\PYG{n}{rm\PYGZus{}inode}\PYG{p}{.}\PYG{n}{i\PYGZus{}zone}\PYG{p}{[}\PYG{l+m+mi}{7}\PYG{p}{]}\PYG{o}{!=}\PYG{l+m+mi}{0}\PYG{p}{)}\PYG{n}{free\PYGZus{}inode}\PYG{p}{(}\PYG{n}{rm\PYGZus{}inode}\PYG{p}{.}\PYG{n}{i\PYGZus{}zone}\PYG{p}{[}\PYG{l+m+mi}{7}\PYG{p}{]);}
+\PYG{c+cm}{/*  \PYGZsh{}2.3 zone[8]  :  double indirect block 两次间址,支持大概256MB*/}
+		\PYG{n}{kprintf}\PYG{p}{(}\PYG{l+s}{\PYGZdq{}}\PYG{l+s+se}{\PYGZbs{}n}\PYG{l+s}{  rm: removing double indirect blocks of file \PYGZsq{}\PYGZpc{}s\PYGZsq{}.\PYGZdq{}}\PYG{p}{,}\PYG{n}{name}\PYG{p}{);}
+		\PYG{n}{memset}\PYG{p}{(}\PYG{n}{two\PYGZus{}sectors}\PYG{p}{,}\PYG{l+m+mh}{0x00}\PYG{p}{,}\PYG{k}{sizeof}\PYG{p}{(}\PYG{n}{two\PYGZus{}sectors}\PYG{p}{));}\PYG{c+cm}{/*reuse that buffer*/}
+		\PYG{n}{memset}\PYG{p}{(}\PYG{n}{sector}\PYG{p}{,}\PYG{l+m+mh}{0x00}\PYG{p}{,}\PYG{k}{sizeof}\PYG{p}{(}\PYG{n}{sector}\PYG{p}{));}
+		\PYG{k}{if}\PYG{p}{(}\PYG{n}{rm\PYGZus{}inode}\PYG{p}{.}\PYG{n}{i\PYGZus{}zone}\PYG{p}{[}\PYG{l+m+mi}{8}\PYG{p}{]}\PYG{o}{==}\PYG{l+m+mi}{0}\PYG{p}{)\PYGZob{}}\PYG{c+cm}{/* allocate newblock for  zone[8] */}
+			\PYG{n}{\PYGZus{}panic}\PYG{p}{(}\PYG{l+s}{\PYGZdq{}FBI WARNING:rm:file\PYGZsq{}s i\PYGZus{}zone[8] is NOT allocated!!!\PYGZdq{}}\PYG{p}{);}
+		\PYG{p}{\PYGZcb{}}
+		\PYG{c+cm}{/*load indexes in zone[8] to memory \PYGZsq{}two\PYGZus{}sectors\PYGZsq{}*/}
+		\PYG{n}{IDE\PYGZus{}read\PYGZus{}sector}\PYG{p}{((}\PYG{k+kt}{void} \PYG{o}{*}\PYG{p}{)}\PYG{n}{two\PYGZus{}sectors}\PYG{p}{,} \PYG{n}{DATA\PYGZus{}BLK\PYGZus{}NR\PYGZus{}TO\PYGZus{}SECTOR\PYGZus{}NR}\PYG{p}{(}\PYG{n}{rm\PYGZus{}inode}\PYG{p}{.}\PYG{n}{i\PYGZus{}zone}\PYG{p}{[}\PYG{l+m+mi}{8}\PYG{p}{]));}
+		\PYG{n}{IDE\PYGZus{}read\PYGZus{}sector}\PYG{p}{((}\PYG{k+kt}{void} \PYG{o}{*}\PYG{p}{)(}\PYG{n}{two\PYGZus{}sectors}\PYG{o}{+}\PYG{l+m+mi}{512}\PYG{p}{),} \PYG{n}{DATA\PYGZus{}BLK\PYGZus{}NR\PYGZus{}TO\PYGZus{}SECTOR\PYGZus{}NR}\PYG{p}{(}\PYG{n}{rm\PYGZus{}inode}\PYG{p}{.}\PYG{n}{i\PYGZus{}zone}\PYG{p}{[}\PYG{l+m+mi}{8}\PYG{p}{])}\PYG{o}{+}\PYG{l+m+mi}{1}\PYG{p}{);}
+		\PYG{n}{u16} \PYG{o}{*} \PYG{n}{p\PYGZus{}zone} \PYG{o}{=} \PYG{p}{(}\PYG{n}{u16} \PYG{o}{*}\PYG{p}{)}\PYG{o}{\PYGZam{}}\PYG{n}{two\PYGZus{}sectors}\PYG{p}{;}
+		\PYG{n}{u8} \PYG{n}{double\PYGZus{}sectors}\PYG{p}{[}\PYG{l+m+mi}{1024}\PYG{p}{]}\PYG{o}{=}\PYG{p}{\PYGZob{}}\PYG{l+m+mi}{0}\PYG{p}{\PYGZcb{};}\PYG{c+cm}{/* double indirect block buffer*/}
+		\PYG{n}{u16} \PYG{o}{*} \PYG{n}{pd} \PYG{o}{=} \PYG{p}{(}\PYG{n}{u16} \PYG{o}{*}\PYG{p}{)}\PYG{o}{\PYGZam{}}\PYG{n}{double\PYGZus{}sectors}\PYG{p}{;}
+		\PYG{k}{for}\PYG{p}{(}\PYG{k+kt}{int} \PYG{n}{i}\PYG{o}{=}\PYG{l+m+mi}{7}\PYG{o}{*}\PYG{n}{SECTOR\PYGZus{}PER\PYGZus{}BLOCK}\PYG{o}{+}\PYG{l+m+mi}{512}\PYG{o}{*}\PYG{n}{SECTOR\PYGZus{}PER\PYGZus{}BLOCK}\PYG{p}{;}\PYG{n}{i}\PYG{o}{\PYGZlt{}}\PYG{n}{total\PYGZus{}sectors}\PYG{p}{;}\PYG{n}{i}\PYG{o}{++}\PYG{p}{)\PYGZob{}}
+			\PYG{c+cm}{/* load single indirect block (zone[8]) to memory, two\PYGZus{}sectolrs \PYGZlt{}= zone[8]  */}
+			\PYG{n}{IDE\PYGZus{}read\PYGZus{}sector}\PYG{p}{((}\PYG{k+kt}{void} \PYG{o}{*}\PYG{p}{)}\PYG{n}{two\PYGZus{}sectors}\PYG{p}{,} \PYG{n}{DATA\PYGZus{}BLK\PYGZus{}NR\PYGZus{}TO\PYGZus{}SECTOR\PYGZus{}NR}\PYG{p}{(}\PYG{n}{rm\PYGZus{}inode}\PYG{p}{.}\PYG{n}{i\PYGZus{}zone}\PYG{p}{[}\PYG{l+m+mi}{8}\PYG{p}{]));}
+			\PYG{n}{IDE\PYGZus{}read\PYGZus{}sector}\PYG{p}{((}\PYG{k+kt}{void} \PYG{o}{*}\PYG{p}{)(}\PYG{n}{two\PYGZus{}sectors}\PYG{o}{+}\PYG{l+m+mi}{512}\PYG{p}{),} \PYG{n}{DATA\PYGZus{}BLK\PYGZus{}NR\PYGZus{}TO\PYGZus{}SECTOR\PYGZus{}NR}\PYG{p}{(}\PYG{n}{rm\PYGZus{}inode}\PYG{p}{.}\PYG{n}{i\PYGZus{}zone}\PYG{p}{[}\PYG{l+m+mi}{8}\PYG{p}{])}\PYG{o}{+}\PYG{l+m+mi}{1}\PYG{p}{);}
+			\PYG{k+kt}{int} \PYG{n}{blk\PYGZus{}i} \PYG{o}{=} \PYG{n}{get\PYGZus{}zone\PYGZus{}blks}\PYG{p}{(}\PYG{n}{i}\PYG{o}{+}\PYG{l+m+mi}{1}\PYG{p}{)}\PYG{o}{\PYGZhy{}}\PYG{l+m+mi}{1}\PYG{p}{;}
+			\PYG{n}{u16} \PYG{n}{single\PYGZus{}indirect\PYGZus{}i} \PYG{o}{=}\PYG{p}{(}\PYG{n}{blk\PYGZus{}i}\PYG{o}{\PYGZhy{}}\PYG{l+m+mi}{7}\PYG{o}{\PYGZhy{}}\PYG{l+m+mi}{512}\PYG{p}{)}\PYG{o}{/}\PYG{l+m+mi}{512}\PYG{p}{;}\PYG{c+cm}{/*zone[0\PYGZti{}6]:7 zone[7]:512*/}
+			\PYG{n}{u16} \PYG{n}{double\PYGZus{}indirect\PYGZus{}i} \PYG{o}{=} \PYG{p}{(}\PYG{n}{blk\PYGZus{}i}\PYG{o}{\PYGZhy{}}\PYG{l+m+mi}{7}\PYG{o}{\PYGZhy{}}\PYG{l+m+mi}{512}\PYG{p}{)} \PYG{o}{\PYGZhy{}}\PYG{l+m+mi}{512}\PYG{o}{*}\PYG{n}{single\PYGZus{}indirect\PYGZus{}i}\PYG{p}{;}
+
+			\PYG{n}{u16} \PYG{n}{si\PYGZus{}zone\PYGZus{}index} \PYG{o}{=} \PYG{n}{p\PYGZus{}zone}\PYG{p}{[}\PYG{n}{single\PYGZus{}indirect\PYGZus{}i}\PYG{p}{];}
+			\PYG{k}{if}\PYG{p}{(}\PYG{n}{si\PYGZus{}zone\PYGZus{}index} \PYG{o}{==}\PYG{l+m+mi}{0}\PYG{p}{)} \PYG{n}{\PYGZus{}panic}\PYG{p}{(}\PYG{l+s}{\PYGZdq{}FBI WARNING:read:file\PYGZsq{}s si\PYGZus{}zone\PYGZus{}index has not been allocated!!!\PYGZdq{}}\PYG{p}{);}
+			\PYG{c+cm}{/* get double indirect block from disk */}
+			\PYG{n}{IDE\PYGZus{}read\PYGZus{}sector}\PYG{p}{((}\PYG{k+kt}{void} \PYG{o}{*}\PYG{p}{)}\PYG{n}{double\PYGZus{}sectors}\PYG{p}{,} \PYG{n}{DATA\PYGZus{}BLK\PYGZus{}NR\PYGZus{}TO\PYGZus{}SECTOR\PYGZus{}NR}\PYG{p}{(}\PYG{n}{si\PYGZus{}zone\PYGZus{}index}\PYG{p}{));}
+			\PYG{n}{IDE\PYGZus{}read\PYGZus{}sector}\PYG{p}{((}\PYG{k+kt}{void} \PYG{o}{*}\PYG{p}{)(}\PYG{n}{double\PYGZus{}sectors}\PYG{o}{+}\PYG{l+m+mi}{512}\PYG{p}{),} \PYG{n}{DATA\PYGZus{}BLK\PYGZus{}NR\PYGZus{}TO\PYGZus{}SECTOR\PYGZus{}NR}\PYG{p}{(}\PYG{n}{si\PYGZus{}zone\PYGZus{}index}\PYG{p}{)}\PYG{o}{+}\PYG{l+m+mi}{1}\PYG{p}{);}
+			\PYG{c+cm}{/* ok, double indirect block is now loaded to double\PYGZus{}sectors in memory */}
+			\PYG{n}{u16} \PYG{n}{db\PYGZus{}zone\PYGZus{}index} \PYG{o}{=} \PYG{n}{pd}\PYG{p}{[}\PYG{n}{double\PYGZus{}indirect\PYGZus{}i}\PYG{p}{];}
+  			\PYG{k}{if}\PYG{p}{(}\PYG{n}{db\PYGZus{}zone\PYGZus{}index}\PYG{o}{==}\PYG{l+m+mi}{0}\PYG{p}{)} \PYG{n}{\PYGZus{}panic}\PYG{p}{(}\PYG{l+s}{\PYGZdq{}FBI WARNING:read:file\PYGZsq{}s db\PYGZus{}zone\PYGZus{}index has not been allocated!!!\PYGZdq{}}\PYG{p}{);}
+			\PYG{c+cm}{/*load file contents been from disk*/}
+			\PYG{k}{if}\PYG{p}{(}\PYG{n}{i}\PYG{o}{\PYGZpc{}}\PYG{l+m+mi}{2}\PYG{o}{==}\PYG{l+m+mi}{0}\PYG{p}{)\PYGZob{}}
+				 \PYG{n}{IDE\PYGZus{}read\PYGZus{}sector}\PYG{p}{((}\PYG{k+kt}{void} \PYG{o}{*}\PYG{p}{)}\PYG{o}{\PYGZam{}}\PYG{n}{sector} \PYG{p}{,} \PYG{n}{DATA\PYGZus{}BLK\PYGZus{}NR\PYGZus{}TO\PYGZus{}SECTOR\PYGZus{}NR}\PYG{p}{(}\PYG{n}{db\PYGZus{}zone\PYGZus{}index}\PYG{p}{));}
+			\PYG{p}{\PYGZcb{}}\PYG{k}{else}\PYG{p}{\PYGZob{}}
+				 \PYG{n}{IDE\PYGZus{}read\PYGZus{}sector}\PYG{p}{((}\PYG{k+kt}{void} \PYG{o}{*}\PYG{p}{)}\PYG{o}{\PYGZam{}}\PYG{n}{sector} \PYG{p}{,} \PYG{n}{DATA\PYGZus{}BLK\PYGZus{}NR\PYGZus{}TO\PYGZus{}SECTOR\PYGZus{}NR}\PYG{p}{(}\PYG{n}{db\PYGZus{}zone\PYGZus{}index}\PYG{p}{)}\PYG{o}{+}\PYG{l+m+mi}{1}\PYG{p}{);}
+				 \PYG{k}{if}\PYG{p}{(}\PYG{n}{db\PYGZus{}zone\PYGZus{}index}\PYG{o}{!=}\PYG{l+m+mi}{0}\PYG{p}{)}\PYG{n}{free\PYGZus{}block}\PYG{p}{(}\PYG{n}{db\PYGZus{}zone\PYGZus{}index}\PYG{p}{);}
+			\PYG{p}{\PYGZcb{}}
+		\PYG{p}{\PYGZcb{}}
+		\PYG{k}{for}\PYG{p}{(}\PYG{k+kt}{int} \PYG{n}{i}\PYG{o}{=}\PYG{l+m+mi}{0}\PYG{p}{;}\PYG{n}{i}\PYG{o}{\PYGZlt{}}\PYG{l+m+mi}{512}\PYG{p}{;}\PYG{n}{i}\PYG{o}{++}\PYG{p}{)\PYGZob{}}
+			\PYG{k}{if}\PYG{p}{(}\PYG{n}{p\PYGZus{}zone}\PYG{p}{[}\PYG{n}{i}\PYG{p}{]}\PYG{o}{!=}\PYG{l+m+mi}{0}\PYG{p}{)}
+				\PYG{n}{free\PYGZus{}block}\PYG{p}{(}\PYG{n}{p\PYGZus{}zone}\PYG{p}{[}\PYG{n}{i}\PYG{p}{]);}
+		\PYG{p}{\PYGZcb{}}
+		\PYG{k}{if}\PYG{p}{(}\PYG{n}{rm\PYGZus{}inode}\PYG{p}{.}\PYG{n}{i\PYGZus{}zone}\PYG{p}{[}\PYG{l+m+mi}{8}\PYG{p}{]}\PYG{o}{!=}\PYG{l+m+mi}{0}\PYG{p}{)}\PYG{n}{free\PYGZus{}inode}\PYG{p}{(}\PYG{n}{rm\PYGZus{}inode}\PYG{p}{.}\PYG{n}{i\PYGZus{}zone}\PYG{p}{[}\PYG{l+m+mi}{8}\PYG{p}{]);}
+	\PYG{p}{\PYGZcb{}}
+	\PYG{k}{else}\PYG{p}{\PYGZob{}}
+		\PYG{n}{kprintf}\PYG{p}{(}\PYG{l+s}{\PYGZdq{}}\PYG{l+s+se}{\PYGZbs{}n}\PYG{l+s}{ file size: \PYGZpc{}d Bytes.\PYGZdq{}}\PYG{p}{,}\PYG{n}{length}\PYG{p}{);}
+		\PYG{n}{\PYGZus{}panic}\PYG{p}{(}\PYG{l+s}{\PYGZdq{} FBI\PYGZus{}WARNING:rm:your file is TOO LARGE!!!\PYGZdq{}}\PYG{p}{);}
+	\PYG{p}{\PYGZcb{}}
+
+\PYG{c+cm}{/* ok, after we have freed its data blocks, we can free its inode*/}
+	\PYG{n}{memset}\PYG{p}{(}\PYG{o}{\PYGZam{}}\PYG{n}{rm\PYGZus{}inode}\PYG{p}{,}\PYG{l+m+mh}{0x00}\PYG{p}{,}\PYG{k}{sizeof}\PYG{p}{(}\PYG{n}{rm\PYGZus{}inode}\PYG{p}{));}
+	\PYG{n}{iput}\PYG{p}{(}\PYG{o}{\PYGZam{}}\PYG{n}{rm\PYGZus{}inode}\PYG{p}{,}\PYG{n}{ino}\PYG{p}{);}
+	\PYG{n}{free\PYGZus{}inode}\PYG{p}{(}\PYG{n}{ino}\PYG{p}{);}
+\PYG{c+cm}{/* remove its infomation from the directory */}
+	\PYG{n}{memset}\PYG{p}{(}\PYG{n}{sector}\PYG{p}{,}\PYG{l+m+mh}{0x00}\PYG{p}{,}\PYG{k}{sizeof}\PYG{p}{(}\PYG{n}{sector}\PYG{p}{));}
+	\PYG{k}{struct} \PYG{n}{dir\PYGZus{}entry} \PYG{o}{*}\PYG{n}{de} \PYG{o}{=} \PYG{p}{(}\PYG{k}{struct} \PYG{n}{dir\PYGZus{}entry} \PYG{o}{*}\PYG{p}{)}\PYG{n+nb}{NULL}\PYG{p}{;}
+\PYG{c+cm}{/*it will rm file under current directory.   */}
+	\PYG{n}{IDE\PYGZus{}read\PYGZus{}sector}\PYG{p}{((}\PYG{k+kt}{void} \PYG{o}{*}\PYG{p}{)}\PYG{o}{\PYGZam{}}\PYG{n}{sector}\PYG{p}{,} \PYG{n}{DATA\PYGZus{}BLK\PYGZus{}NR\PYGZus{}TO\PYGZus{}SECTOR\PYGZus{}NR}\PYG{p}{(}\PYG{n}{current}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{pwd}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{i\PYGZus{}zone}\PYG{p}{[}\PYG{l+m+mi}{0}\PYG{p}{]));}
+	\PYG{n}{de} \PYG{o}{=} \PYG{p}{(}\PYG{k}{struct} \PYG{n}{dir\PYGZus{}entry}\PYG{o}{*}\PYG{p}{)}\PYG{n}{sector}\PYG{p}{;}
+	\PYG{c+cm}{/* in case that two directory have the same name */}
+	\PYG{k}{if}\PYG{p}{(}\PYG{n}{get\PYGZus{}dir}\PYG{p}{((}\PYG{k+kt}{char} \PYG{o}{*}\PYG{p}{)}\PYG{n}{name}\PYG{p}{)}\PYG{o}{==\PYGZhy{}}\PYG{l+m+mi}{1}\PYG{p}{)\PYGZob{}}
+		\PYG{n}{kprintf}\PYG{p}{(}\PYG{l+s}{\PYGZdq{}}\PYG{l+s+se}{\PYGZbs{}n}\PYG{l+s}{ WARNING:rm:the file \PYGZsq{}\PYGZpc{}s\PYGZsq{} does NOT exist.\PYGZdq{}}\PYG{p}{,}\PYG{n}{name}\PYG{p}{);}
+		\PYG{k}{return} \PYG{p}{;}
+	\PYG{p}{\PYGZcb{}}
+\PYG{c+cm}{/*we should control the length of file name,otherwise may run into problem*/}
+	\PYG{k}{if}\PYG{p}{(} \PYG{n}{strlen}\PYG{p}{(}\PYG{n}{name}\PYG{p}{)} \PYG{o}{\PYGZgt{}} \PYG{n}{MAX\PYGZus{}NAME\PYGZus{}LEN}\PYG{p}{)}
+		\PYG{n}{\PYGZus{}panic}\PYG{p}{(}\PYG{l+s}{\PYGZdq{}FBI WARNING:length of dir name must under 14 chars!}\PYG{l+s+se}{\PYGZbs{}n}\PYG{l+s}{ halt...\PYGZdq{}}\PYG{p}{);}\PYG{c+c1}{//MAX\PYGZus{}NAME\PYGZus{}LEN}
+	\PYG{k+kt}{int} \PYG{n}{i}\PYG{o}{=}\PYG{l+m+mi}{0}\PYG{p}{;}
+	\PYG{k}{for}\PYG{p}{(}\PYG{n}{i}\PYG{o}{=}\PYG{l+m+mi}{0}\PYG{p}{;}\PYG{n}{i}\PYG{o}{\PYGZlt{}}\PYG{n}{current}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{pwd}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{i\PYGZus{}size}\PYG{o}{/}\PYG{k}{sizeof}\PYG{p}{(}\PYG{k}{struct} \PYG{n}{dir\PYGZus{}entry}\PYG{p}{);}\PYG{n}{i}\PYG{o}{++}\PYG{p}{)\PYGZob{}}
+		\PYG{k}{if}\PYG{p}{(}\PYG{n}{equal\PYGZus{}to}\PYG{p}{((}\PYG{k+kt}{char} \PYG{o}{*}\PYG{p}{)}\PYG{n}{de}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{name}\PYG{p}{,}\PYG{n}{name}\PYG{p}{))} \PYG{k}{break} \PYG{p}{;}
+		\PYG{n}{de}\PYG{o}{++}\PYG{p}{;}
+	\PYG{p}{\PYGZcb{}}	\PYG{c+cm}{/*point to correct position*/}
+	\PYG{n}{memset}\PYG{p}{(}\PYG{n}{de}\PYG{p}{,}\PYG{l+m+mh}{0x00}\PYG{p}{,}\PYG{k}{sizeof}\PYG{p}{(}\PYG{k}{struct} \PYG{n}{dir\PYGZus{}entry}\PYG{p}{));}
+	\PYG{k}{struct} \PYG{n}{dir\PYGZus{}entry} \PYG{o}{*}\PYG{n}{de2} \PYG{o}{=} \PYG{p}{(}\PYG{k}{struct} \PYG{n}{dir\PYGZus{}entry} \PYG{o}{*}\PYG{p}{)}\PYG{n+nb}{NULL}\PYG{p}{;}
+	\PYG{k}{if}\PYG{p}{(}\PYG{n}{i}\PYG{o}{==}\PYG{n}{current}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{pwd}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{i\PYGZus{}size}\PYG{o}{/}\PYG{k}{sizeof}\PYG{p}{(}\PYG{k}{struct} \PYG{n}{dir\PYGZus{}entry}\PYG{p}{))\PYGZob{}}
+\PYG{c+cm}{/* if it is the last one */}
+		\PYG{k}{goto} \PYG{n}{writeback}\PYG{p}{;}
+	\PYG{p}{\PYGZcb{}}
+	\PYG{n}{de2}\PYG{o}{=}\PYG{n}{de}\PYG{p}{;} \PYG{n}{de2}\PYG{o}{++}\PYG{p}{;}
+	\PYG{k}{for}\PYG{p}{(}\PYG{k+kt}{int} \PYG{n}{j}\PYG{o}{=}\PYG{l+m+mi}{0}\PYG{p}{;}\PYG{n}{j}\PYG{o}{\PYGZlt{}}\PYG{n}{current}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{pwd}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{i\PYGZus{}size}\PYG{o}{/}\PYG{k}{sizeof}\PYG{p}{(}\PYG{k}{struct} \PYG{n}{dir\PYGZus{}entry}\PYG{p}{)}\PYG{o}{\PYGZhy{}}\PYG{n}{i}\PYG{p}{;}\PYG{n}{j}\PYG{o}{++}\PYG{p}{)\PYGZob{}}
+		\PYG{o}{*} \PYG{n}{de} \PYG{o}{=} \PYG{o}{*} \PYG{n}{de2}\PYG{p}{;}
+		\PYG{n}{de}\PYG{o}{++}\PYG{p}{;}\PYG{n}{de2}\PYG{o}{++}\PYG{p}{;}
+	\PYG{p}{\PYGZcb{}}
+\PYG{n+nl}{writeback}\PYG{p}{:}
+	\PYG{n}{IDE\PYGZus{}write\PYGZus{}sector}\PYG{p}{((}\PYG{k+kt}{void} \PYG{o}{*}\PYG{p}{)}\PYG{o}{\PYGZam{}}\PYG{n}{sector}\PYG{p}{,} \PYG{n}{DATA\PYGZus{}BLK\PYGZus{}NR\PYGZus{}TO\PYGZus{}SECTOR\PYGZus{}NR}\PYG{p}{(}\PYG{n}{current}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{pwd}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{i\PYGZus{}zone}\PYG{p}{[}\PYG{l+m+mi}{0}\PYG{p}{]));}
+\PYG{c+cm}{/*ok, update current directory file\PYGZsq{}s filesize, because we removed a record.*/}
+	\PYG{n}{current}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{pwd}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{i\PYGZus{}size} \PYG{o}{\PYGZhy{}=} \PYG{l+m+mi}{1} \PYG{o}{*} \PYG{k}{sizeof}\PYG{p}{(}\PYG{k}{struct} \PYG{n}{dir\PYGZus{}entry}\PYG{p}{);}	\PYG{c+cm}{/* remove a dir*/}
+	\PYG{n}{iput}\PYG{p}{(}\PYG{n}{current}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{pwd}\PYG{p}{,}\PYG{n}{current}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{pwd}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{i\PYGZus{}ino}\PYG{p}{);}
+	\PYG{n}{kprintf}\PYG{p}{(}\PYG{l+s}{\PYGZdq{}}\PYG{l+s+se}{\PYGZbs{}n}\PYG{l+s}{  rm: file \PYGZsq{}\PYGZpc{}s\PYGZsq{} has been successfully removed.\PYGZdq{}}\PYG{p}{,}\PYG{n}{name}\PYG{p}{);}
+	\PYG{k}{return}\PYG{p}{;}
+\PYG{p}{\PYGZcb{}}
+\end{Verbatim}

@@ -1,0 +1,7 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{c+c1}{\PYGZsh{}这里的命令不是在Ubuntu中运行，而是在qemu虚拟机中使用}
+ls
+cat jane.txt
+ls
+mkdir dir1/dir2/dir3
+\end{Verbatim}

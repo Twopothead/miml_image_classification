@@ -1,0 +1,3 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{n+nf}{void} \PYG{n+no}{irq\PYGZus{}handle}\PYG{p}{(}\PYG{n+no}{TrapFrame} \PYG{p}{*}\PYG{n+no}{trapframe}\PYG{p}{)}\PYG{c}{;}
+\end{Verbatim}

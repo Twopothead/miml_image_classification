@@ -1,0 +1,32 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{k}{struct} \PYG{n}{m\PYGZus{}inode}
+\PYG{p}{\PYGZob{}}
+	\PYG{n}{u8} \PYG{n}{i\PYGZus{}mode}\PYG{p}{;}			\PYG{c+cm}{/*file type(dir/normal) and attribute(rwx)*/}
+	\PYG{n}{u8} \PYG{n}{i\PYGZus{}uid}\PYG{p}{;}			\PYG{c+cm}{/*user id*/}
+	\PYG{n}{u8} \PYG{n}{i\PYGZus{}gid}\PYG{p}{;}			\PYG{c+cm}{/*group id*/}
+	\PYG{n}{u8} \PYG{n}{i\PYGZus{}nlinks}\PYG{p}{;}			\PYG{c+cm}{/*num of files that link to it*/}
+	\PYG{n}{u8} \PYG{n}{padding0}\PYG{p}{[}\PYG{l+m+mi}{2}\PYG{p}{];}
+	\PYG{n}{u32} \PYG{n}{i\PYGZus{}creat\PYGZus{}time}\PYG{p}{;}
+	\PYG{n}{u16} \PYG{n}{i\PYGZus{}zone}\PYG{p}{[}\PYG{l+m+mi}{10}\PYG{p}{];}
+	\PYG{n}{u16} \PYG{n}{i\PYGZus{}ino}\PYG{p}{;}			\PYG{c+cm}{/*inode id号　(bitmap)*/}
+	\PYG{n}{u32} \PYG{n}{i\PYGZus{}size}\PYG{p}{;}			\PYG{c+cm}{/*size of file*/}
+	\PYG{n}{u32} \PYG{n}{padding1}\PYG{p}{[}\PYG{l+m+mi}{7}\PYG{p}{];}		\PYG{c+cm}{/*占位　8*32个字节*/}
+\PYG{c+cm}{/* ok,let\PYGZsq{}s make sizeof(d\PYGZus{}inode) exactly equal to 64,that\PYGZsq{}s 512bits,}
+\PYG{c+cm}{ * a sector can put exactly 8 of d\PYGZus{}inode.}
+\PYG{c+cm}{ * if we attemp to extend the m\PYGZus{}inode and d\PYGZus{}inode,make sure that}
+\PYG{c+cm}{ * they are in sync with each other,and adjust the fields and paddings}
+\PYG{c+cm}{ * without changing the sizeof(d\PYGZus{}inode)}
+\PYG{c+cm}{ * zone[0\PYGZti{}6]:	direct block}
+\PYG{c+cm}{ * zone[7]:	single indirect block}
+\PYG{c+cm}{ * zone[8]:	double indirect block}
+\PYG{c+cm}{ * zone[9]:	trible indirect block}
+\PYG{c+cm}{ *These are only in memeory*/}
+	\PYG{n}{u32} \PYG{n}{i\PYGZus{}access\PYGZus{}time}\PYG{p}{;}
+	\PYG{n}{u8} \PYG{n}{i\PYGZus{}mount}\PYG{p}{;}
+	\PYG{n}{u8} \PYG{n}{i\PYGZus{}dev}\PYG{p}{;}			\PYG{c+cm}{/*hd0 or hd1*/}
+	\PYG{n}{u8} \PYG{n}{i\PYGZus{}dirty}\PYG{p}{;}
+	\PYG{n}{u8} \PYG{n}{i\PYGZus{}updated}\PYG{p}{;}
+	\PYG{n}{u8} \PYG{n}{i\PYGZus{}count}\PYG{p}{;}			\PYG{c+cm}{/*引用数*/}
+	\PYG{k}{struct} \PYG{n}{task\PYGZus{}struct} \PYG{o}{*}\PYG{n}{i\PYGZus{}wait}\PYG{p}{;}	\PYG{c+cm}{/*not implemented yet*/}
+\PYG{p}{\PYGZcb{}}\PYG{n}{\PYGZus{}\PYGZus{}attribute\PYGZus{}\PYGZus{}}\PYG{p}{((}\PYG{n}{packed}\PYG{p}{));}		\PYG{c+cm}{/*一定要加，不然字节对不齐，会多用空间*/}
+\end{Verbatim}

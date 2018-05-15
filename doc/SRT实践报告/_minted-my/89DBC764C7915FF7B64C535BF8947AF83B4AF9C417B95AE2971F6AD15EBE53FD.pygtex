@@ -1,0 +1,19 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{k+kt}{void} \PYG{n+nf}{IDE\PYGZus{}write\PYGZus{}sector}\PYG{p}{(}\PYG{k+kt}{void} \PYG{o}{*}\PYG{n}{src}\PYG{p}{,}\PYG{k+kt}{int} \PYG{n}{lba}\PYG{p}{)}
+\PYG{p}{\PYGZob{}}
+	\PYG{n}{switch\PYGZus{}to\PYGZus{}disk}\PYG{p}{(}\PYG{l+m+mi}{1}\PYG{p}{);}
+	\PYG{n}{set\PYGZus{}disk\PYGZus{}no}\PYG{p}{(}\PYG{l+m+mi}{1}\PYG{p}{);}\PYG{c+cm}{/*disk1 :PC hard disk */}
+	\PYG{n}{IDE\PYGZus{}disk\PYGZus{}wait}\PYG{p}{();}
+	\PYG{n}{outb\PYGZus{}wait}\PYG{p}{(}\PYG{n}{ATA\PYGZus{}PORT\PYGZus{}SECT\PYGZus{}COUNT}\PYG{p}{,}\PYG{l+m+mi}{1}\PYG{p}{);}\PYG{c+cm}{/*outb(0x1f2,1);*/}
+	\PYG{n}{outb\PYGZus{}wait}\PYG{p}{(}\PYG{n}{ATA\PYGZus{}PORT\PYGZus{}LBA\PYGZus{}LOW} \PYG{p}{,}\PYG{n}{lba}\PYG{p}{);}\PYG{c+cm}{/*outb(0x1f3,lba);*/}
+	\PYG{n}{outb\PYGZus{}wait}\PYG{p}{(}\PYG{n}{ATA\PYGZus{}PORT\PYGZus{}LBA\PYGZus{}MID} \PYG{p}{,}\PYG{n}{lba} \PYG{o}{\PYGZgt{}\PYGZgt{}} \PYG{l+m+mi}{8}\PYG{p}{);}\PYG{c+cm}{/*outb(0x1f4,lba\PYGZgt{}\PYGZgt{}8)*/}
+	\PYG{n}{outb\PYGZus{}wait}\PYG{p}{(}\PYG{n}{ATA\PYGZus{}PORT\PYGZus{}LBA\PYGZus{}HIGH} \PYG{p}{,}\PYG{n}{lba} \PYG{o}{\PYGZgt{}\PYGZgt{}} \PYG{l+m+mi}{16}\PYG{p}{);}\PYG{c+cm}{/*outb(0x1f5,lba\PYGZgt{}\PYGZgt{}16)*/}
+	\PYG{n}{outb\PYGZus{}wait}\PYG{p}{(}\PYG{n}{ATA\PYGZus{}PORT\PYGZus{}DEVICE} \PYG{p}{,} \PYG{l+m+mh}{0xe0} \PYG{o}{|}\PYG{p}{(}\PYG{n}{disk\PYGZus{}no}\PYG{o}{\PYGZam{}}\PYG{l+m+mi}{1}\PYG{p}{)}\PYG{o}{\PYGZlt{}\PYGZlt{}}\PYG{l+m+mi}{4}\PYG{o}{|} \PYG{p}{(}\PYG{n}{lba} \PYG{o}{\PYGZgt{}\PYGZgt{}} \PYG{l+m+mi}{24}\PYG{p}{));}\PYG{c+cm}{/*outb(0x1f5,lba\PYGZgt{}\PYGZgt{}16)*/}
+	\PYG{c+cm}{/*disk\PYGZus{}no determines write to which disk.*/}
+	\PYG{n}{outb\PYGZus{}wait}\PYG{p}{(}\PYG{n}{ATA\PYGZus{}PORT\PYGZus{}STATUS}\PYG{p}{,} \PYG{n}{HD\PYGZus{}WRITE}\PYG{p}{);}
+	\PYG{n}{IDE\PYGZus{}disk\PYGZus{}wait}\PYG{p}{();}
+	\PYG{k}{for}\PYG{p}{(}\PYG{k+kt}{int} \PYG{n}{i} \PYG{o}{=} \PYG{l+m+mi}{0}\PYG{p}{;} \PYG{n}{i} \PYG{o}{\PYGZlt{}} \PYG{n}{SECTOR\PYGZus{}SIZE}\PYG{o}{/}\PYG{l+m+mi}{4} \PYG{p}{;} \PYG{n}{i}\PYG{o}{++}\PYG{p}{)\PYGZob{}}
+	　　　　 \PYG{n}{\PYGZus{}out\PYGZus{}data32}\PYG{p}{(}\PYG{n}{ATA\PYGZus{}PORT\PYGZus{}DATA}\PYG{p}{,((}\PYG{n}{u32}\PYG{o}{*}\PYG{p}{)}\PYG{n}{src}\PYG{p}{)[}\PYG{n}{i}\PYG{p}{]);}
+	\PYG{p}{\PYGZcb{}}
+\PYG{p}{\PYGZcb{}}
+\end{Verbatim}

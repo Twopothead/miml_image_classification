@@ -1,0 +1,14 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{k}{struct} \PYG{n}{d\PYGZus{}super\PYGZus{}block}
+\PYG{p}{\PYGZob{}}
+\PYG{n}{u16} \PYG{n}{s\PYGZus{}ninodes}\PYG{p}{;}
+\PYG{n}{u16} \PYG{n}{s\PYGZus{}capacity\PYGZus{}blks}\PYG{p}{;}\PYG{c+cm}{/*capacity count in blocks*/}
+\PYG{n}{u16} \PYG{n}{s\PYGZus{}startsect}\PYG{p}{;}\PYG{c+cm}{/*超级块的起始扇区，sector0为boot sector,故超级块从1开始*/}
+\PYG{n}{u16} \PYG{n}{s\PYGZus{}zone\PYGZus{}bitmap\PYGZus{}blks}\PYG{p}{;}\PYG{c+cm}{/*according to Prof Jiang,we will not use this policy (data block bitmap) anymore.*/}
+\PYG{n}{u16} \PYG{n}{s\PYGZus{}inode\PYGZus{}bitmap\PYGZus{}blks}\PYG{p}{;}\PYG{c+cm}{/*num of blks that bitmap takes up*/}
+\PYG{n}{u16} \PYG{n}{s\PYGZus{}inode\PYGZus{}blks}\PYG{p}{;}
+\PYG{n}{u16} \PYG{n}{s\PYGZus{}firstdatazone}\PYG{p}{;}
+\PYG{n}{u16} \PYG{n}{s\PYGZus{}specific\PYGZus{}blk\PYGZus{}nr\PYGZus{}group}\PYG{p}{;}\PYG{c+cm}{/*成组链接专用块对应磁盘上的组号*/}
+\PYG{n}{u16} \PYG{n}{s\PYGZus{}magic}\PYG{p}{;}\PYG{c+cm}{/*ri\PYGZus{}fs magic:0x88*/}
+\PYG{p}{\PYGZcb{};}
+\end{Verbatim}

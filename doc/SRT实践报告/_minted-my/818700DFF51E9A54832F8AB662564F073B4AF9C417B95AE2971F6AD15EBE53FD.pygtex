@@ -1,0 +1,10 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+	\PYG{k}{struct} \PYG{n}{task\PYGZus{}struct}\PYG{p}{\PYGZob{}}
+		\PYG{n}{u8} \PYG{n}{gid}\PYG{p}{;}
+		\PYG{n}{u8} \PYG{n}{uid}\PYG{p}{;}
+		\PYG{k}{struct} \PYG{n}{m\PYGZus{}inode} \PYG{o}{*} \PYG{n}{pwd}\PYG{p}{;}
+		\PYG{k}{struct} \PYG{n}{m\PYGZus{}inode} \PYG{o}{*} \PYG{n}{root}\PYG{p}{;}
+		\PYG{k}{struct} \PYG{n}{file} \PYG{o}{*} \PYG{n}{filp}\PYG{p}{[}\PYG{n}{NR\PYGZus{}OPEN}\PYG{p}{];}	\PYG{c+cm}{/*　进程表项　*/}
+	\PYG{c+cm}{/* this is user\PYGZhy{}wide file table */}
+	\PYG{p}{\PYGZcb{};}
+\end{Verbatim}

@@ -1,0 +1,5 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+	\PYG{k}{struct} \PYG{n}{active\PYGZus{}inode\PYGZus{}table}\PYG{p}{\PYGZob{}}
+		\PYG{k}{struct} \PYG{n}{m\PYGZus{}inode} \PYG{n}{inode\PYGZus{}table}\PYG{p}{[}\PYG{n}{MAX\PYGZus{}ACTIVE\PYGZus{}INODE}\PYG{p}{];}
+	\PYG{p}{\PYGZcb{};}
+\end{Verbatim}

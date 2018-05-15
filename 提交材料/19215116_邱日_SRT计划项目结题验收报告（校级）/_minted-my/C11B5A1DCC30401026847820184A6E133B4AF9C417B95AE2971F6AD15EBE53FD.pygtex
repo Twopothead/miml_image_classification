@@ -1,0 +1,10 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{k}{union} \PYG{n}{free\PYGZus{}space\PYGZus{}grouping\PYGZus{}head} \PYG{p}{\PYGZob{}}\PYG{c+cm}{/*成组链接法，各组空闲块的头*/}
+	\PYG{n}{u16} \PYG{n}{bytes}\PYG{p}{[}\PYG{l+m+mi}{512}\PYG{p}{]} \PYG{o}{=} \PYG{p}{\PYGZob{}}\PYG{l+m+mi}{0}\PYG{p}{\PYGZcb{};}\PYG{c+cm}{/*占坑位　2 sectors*/}
+	\PYG{k}{struct} \PYG{p}{\PYGZob{}}
+		\PYG{n}{u16} \PYG{n}{s\PYGZus{}free}\PYG{p}{;}
+		\PYG{n}{u16} \PYG{n}{s\PYGZus{}free\PYGZus{}blk\PYGZus{}nr}\PYG{p}{[}\PYG{n}{BLKS\PYGZus{}PER\PYGZus{}GROUP}\PYG{p}{];}\PYG{c+cm}{/*[64]*/}
+	\PYG{p}{\PYGZcb{};}
+\PYG{c+cm}{/*s\PYGZus{}free\PYGZus{}blk\PYGZus{}nr[0] is next free group\PYGZsq{}s nr*/}
+\PYG{p}{\PYGZcb{};}
+\end{Verbatim}

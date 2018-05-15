@@ -1,0 +1,55 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{k+kt}{int} \PYG{n+nf}{open}\PYG{p}{(}\PYG{k}{const} \PYG{k+kt}{char} \PYG{o}{*}\PYG{n}{name}\PYG{p}{)\PYGZob{}}
+	\PYG{k+kt}{int} \PYG{n}{fd}\PYG{p}{,}\PYG{n}{i}\PYG{p}{;}
+	\PYG{k+kt}{int} \PYG{n}{ino} \PYG{o}{=} \PYG{n}{get\PYGZus{}dir}\PYG{p}{((}\PYG{k+kt}{char} \PYG{o}{*}\PYG{p}{)}\PYG{n}{name}\PYG{p}{);}
+	\PYG{k}{if}\PYG{p}{(}\PYG{n}{ino}\PYG{o}{==}\PYG{l+m+mi}{0}\PYG{p}{)\PYGZob{}}
+		\PYG{n}{kprintf}\PYG{p}{(}\PYG{l+s}{\PYGZdq{} open:failed, ino cannot be zero.\PYGZdq{}}\PYG{p}{);}
+		\PYG{k}{return} \PYG{o}{\PYGZhy{}}\PYG{l+m+mi}{1}\PYG{p}{;}
+	\PYG{p}{\PYGZcb{}}
+	\PYG{k}{if}\PYG{p}{(}\PYG{n}{ino}\PYG{o}{==\PYGZhy{}}\PYG{l+m+mi}{1}\PYG{p}{)\PYGZob{}}
+		\PYG{n}{kprintf}\PYG{p}{(}\PYG{l+s}{\PYGZdq{}}\PYG{l+s+se}{\PYGZbs{}n}\PYG{l+s}{ open: \PYGZsq{}\PYGZpc{}s\PYGZsq{}:no such file or directory.\PYGZdq{}}\PYG{p}{,}\PYG{n}{name}\PYG{p}{);}
+		\PYG{k}{return} \PYG{o}{\PYGZhy{}}\PYG{l+m+mi}{1}\PYG{p}{;}
+	\PYG{p}{\PYGZcb{}}
+\PYG{c+cm}{/* search the active inode table, if it\PYGZsq{}s not in this table,just copy.*/}
+	\PYG{k}{for}\PYG{p}{(}\PYG{n}{i}\PYG{o}{=}\PYG{l+m+mi}{0}\PYG{p}{;}\PYG{n}{i}\PYG{o}{\PYGZlt{}}\PYG{n}{MAX\PYGZus{}ACTIVE\PYGZus{}INODE}\PYG{p}{;}\PYG{n}{i}\PYG{o}{++}\PYG{p}{)\PYGZob{}}
+		\PYG{k}{if}\PYG{p}{(}\PYG{n}{active\PYGZus{}inode\PYGZus{}table}\PYG{p}{.}\PYG{n}{inode\PYGZus{}table}\PYG{p}{[}\PYG{n}{i}\PYG{p}{].}\PYG{n}{i\PYGZus{}ino} \PYG{o}{==} \PYG{n}{ino}\PYG{p}{)}
+			\PYG{k}{break}\PYG{p}{;}
+	\PYG{p}{\PYGZcb{}}
+	\PYG{k+kt}{int} \PYG{n}{active\PYGZus{}inode\PYGZus{}table\PYGZus{}nr}\PYG{o}{=}\PYG{n}{get\PYGZus{}active\PYGZus{}inode\PYGZus{}table\PYGZus{}nr}\PYG{p}{();}
+	\PYG{k}{if}\PYG{p}{(}\PYG{n}{i}\PYG{o}{\PYGZgt{}=}\PYG{n}{MAX\PYGZus{}ACTIVE\PYGZus{}INODE}\PYG{p}{)\PYGZob{}}\PYG{c+cm}{/*no record found,need to copy. */}
+		\PYG{k}{if}\PYG{p}{(}\PYG{n}{active\PYGZus{}inode\PYGZus{}table\PYGZus{}nr}\PYG{o}{\PYGZgt{}}\PYG{n}{MAX\PYGZus{}ACTIVE\PYGZus{}INODE}\PYG{p}{)}\PYG{n}{\PYGZus{}panic}\PYG{p}{(}\PYG{l+s}{\PYGZdq{}FBI\PYGZus{}WARNING:CAN NOT open more than 64 files at the same time!\PYGZdq{}}\PYG{p}{);}
+		\PYG{n}{iget}\PYG{p}{(}\PYG{o}{\PYGZam{}}\PYG{n}{active\PYGZus{}inode\PYGZus{}table}\PYG{p}{.}\PYG{n}{inode\PYGZus{}table}\PYG{p}{[}\PYG{n}{active\PYGZus{}inode\PYGZus{}table\PYGZus{}nr}\PYG{p}{],}\PYG{n}{ino}\PYG{p}{);}
+
+	\PYG{p}{\PYGZcb{}}\PYG{k}{else}\PYG{p}{\PYGZob{}}\PYG{c+cm}{/* it has been opened before, no nead to copy */}
+	      \PYG{c+cm}{/* here,we get i */}
+		\PYG{k}{if}\PYG{p}{(}\PYG{n}{current}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{filp}\PYG{p}{[}\PYG{n}{i}\PYG{p}{]}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{f\PYGZus{}inode}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{i\PYGZus{}ino} \PYG{o}{==} \PYG{n}{ino}\PYG{p}{)}\PYG{k}{return} \PYG{n}{i}\PYG{p}{;}
+		\PYG{k}{goto} \PYG{n}{comeon}\PYG{p}{;}
+	\PYG{p}{\PYGZcb{}}
+\PYG{n+nl}{comeon}\PYG{p}{:}
+\PYG{c+cm}{/* find a blank entry in process\PYGZsq{}s file descriptor table */}
+	\PYG{k}{for}\PYG{p}{(}\PYG{n}{fd}\PYG{o}{=}\PYG{l+m+mi}{0} \PYG{p}{;} \PYG{n}{fd} \PYG{o}{\PYGZlt{}}\PYG{n}{NR\PYGZus{}OPEN} \PYG{p}{;} \PYG{n}{fd}\PYG{o}{++} \PYG{p}{)\PYGZob{}}
+
+		\PYG{k}{if}\PYG{p}{(}\PYG{o}{!}\PYG{n}{current}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{filp}\PYG{p}{[}\PYG{n}{fd}\PYG{p}{])}
+			\PYG{k}{break}\PYG{p}{;}
+	\PYG{p}{\PYGZcb{}}
+	\PYG{k}{if}\PYG{p}{(}\PYG{n}{fd}\PYG{o}{\PYGZgt{}=}\PYG{n}{NR\PYGZus{}OPEN}\PYG{p}{)}
+		\PYG{k}{return} \PYG{o}{\PYGZhy{}}\PYG{l+m+mi}{1}\PYG{p}{;}\PYG{c+cm}{/* overflow */}
+\PYG{c+cm}{/* find a blank entry in system file table */}
+	\PYG{n}{file} \PYG{o}{*} \PYG{n}{p\PYGZus{}ft} \PYG{o}{=} \PYG{n}{file\PYGZus{}table}\PYG{p}{;}
+	\PYG{k+kt}{int} \PYG{n}{j}\PYG{p}{;}
+	\PYG{k}{for}\PYG{p}{(}\PYG{n}{j}\PYG{o}{=}\PYG{l+m+mi}{0}\PYG{p}{;}\PYG{n}{j}\PYG{o}{\PYGZlt{}}\PYG{n}{NR\PYGZus{}FILE}\PYG{p}{;}\PYG{n}{j}\PYG{o}{++}\PYG{p}{,}\PYG{n}{p\PYGZus{}ft}\PYG{o}{++}\PYG{p}{)\PYGZob{}}
+		\PYG{k}{if}\PYG{p}{(}\PYG{o}{!}\PYG{n}{p\PYGZus{}ft}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{f\PYGZus{}count}\PYG{p}{)} \PYG{k}{break}\PYG{p}{;}
+	\PYG{p}{\PYGZcb{}}
+	\PYG{k}{if}\PYG{p}{(}\PYG{n}{j}\PYG{o}{\PYGZgt{}=}\PYG{n}{NR\PYGZus{}FILE}\PYG{p}{)\PYGZob{}}
+		\PYG{n}{kprintf}\PYG{p}{(}\PYG{l+s}{\PYGZdq{}}\PYG{l+s+se}{\PYGZbs{}n}\PYG{l+s}{ failed to create.\PYGZdq{}}\PYG{p}{);}
+		\PYG{k}{return} \PYG{o}{\PYGZhy{}}\PYG{l+m+mi}{1}\PYG{p}{;}
+	\PYG{p}{\PYGZcb{}}
+	\PYG{k+kt}{int} \PYG{n}{valid\PYGZus{}file\PYGZus{}table\PYGZus{}nr} \PYG{o}{=} \PYG{n}{j}\PYG{p}{;}
+\PYG{c+cm}{/* ok, let filp[fd] points to a entry in file table,and let f\PYGZus{}count+=1 */}
+\PYG{p}{(}\PYG{n}{current}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{filp}\PYG{p}{[}\PYG{n}{fd}\PYG{p}{]}\PYG{o}{=}\PYG{n}{p\PYGZus{}ft}\PYG{p}{)}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{f\PYGZus{}count}\PYG{o}{++}\PYG{p}{;}
+\PYG{c+cm}{/* NOTICE! here we should let filp[fd]\PYGZhy{}\PYGZgt{}f\PYGZus{}inode point to an entry in active\PYGZus{}inode\PYGZus{}table*/}
+\PYG{n}{current}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{filp}\PYG{p}{[}\PYG{n}{fd}\PYG{p}{]}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{f\PYGZus{}inode} \PYG{o}{=} \PYG{o}{\PYGZam{}}\PYG{n}{active\PYGZus{}inode\PYGZus{}table}\PYG{p}{.}\PYG{n}{inode\PYGZus{}table}\PYG{p}{[}\PYG{n}{active\PYGZus{}inode\PYGZus{}table\PYGZus{}nr}\PYG{p}{];}
+\PYG{c+cm}{/* keep there tables in sync with each other */}
+	\PYG{k}{return} \PYG{n}{fd}\PYG{p}{;}
+\PYG{p}{\PYGZcb{}}
+\end{Verbatim}

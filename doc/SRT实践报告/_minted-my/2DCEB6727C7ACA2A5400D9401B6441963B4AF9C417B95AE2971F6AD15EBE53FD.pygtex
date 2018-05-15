@@ -1,0 +1,18 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+	\PYG{k+kt}{int} \PYG{n+nf}{new\PYGZus{}inode}\PYG{p}{()}
+	\PYG{p}{\PYGZob{}}
+		\PYG{n}{u8} \PYG{n}{sector}\PYG{p}{[}\PYG{l+m+mi}{512}\PYG{p}{]}\PYG{o}{=}\PYG{p}{\PYGZob{}}\PYG{l+m+mi}{0}\PYG{p}{\PYGZcb{};}
+		\PYG{k+kt}{int} \PYG{n}{i} \PYG{o}{=} \PYG{l+m+mi}{0}\PYG{p}{;}\PYG{n}{rios\PYGZus{}superblock}\PYG{p}{.}\PYG{n}{s\PYGZus{}startsect} \PYG{o}{=} \PYG{l+m+mi}{1}\PYG{p}{;}
+		\PYG{n}{IDE\PYGZus{}read\PYGZus{}sector}\PYG{p}{((}\PYG{k+kt}{void} \PYG{o}{*}\PYG{p}{)}\PYG{o}{\PYGZam{}}\PYG{n}{sector}\PYG{p}{,}\PYG{n}{NR\PYGZus{}INODE\PYGZus{}MAP\PYGZus{}BLK}\PYG{p}{(}\PYG{n}{rios\PYGZus{}superblock}\PYG{p}{));}
+		\PYG{k}{for}\PYG{p}{(}\PYG{n}{i}\PYG{o}{=}\PYG{l+m+mi}{0}\PYG{p}{;}\PYG{n}{i}\PYG{o}{\PYGZlt{}}\PYG{l+m+mi}{512}\PYG{o}{*}\PYG{l+m+mi}{8}\PYG{p}{;}\PYG{n}{i}\PYG{o}{++}\PYG{p}{)\PYGZob{}}
+			\PYG{k}{if}\PYG{p}{(}\PYG{n}{bitmap\PYGZus{}test\PYGZus{}bit}\PYG{p}{(}\PYG{n}{i}\PYG{p}{,}\PYG{n}{sector}\PYG{p}{))\PYGZob{}}
+				\PYG{p}{;}
+			\PYG{p}{\PYGZcb{}}\PYG{k}{else}\PYG{p}{\PYGZob{}}
+				\PYG{n}{bitmap\PYGZus{}set\PYGZus{}bit}\PYG{p}{(}\PYG{n}{i}\PYG{p}{,}\PYG{n}{sector}\PYG{p}{);}
+				\PYG{n}{IDE\PYGZus{}write\PYGZus{}sector}\PYG{p}{((}\PYG{k+kt}{void} \PYG{o}{*}\PYG{p}{)}\PYG{o}{\PYGZam{}}\PYG{n}{sector}\PYG{p}{,}\PYG{n}{NR\PYGZus{}INODE\PYGZus{}MAP\PYGZus{}BLK}\PYG{p}{(}\PYG{n}{rios\PYGZus{}superblock}\PYG{p}{));}
+				\PYG{k}{return} \PYG{n}{i}\PYG{p}{;}
+			\PYG{p}{\PYGZcb{}}
+		\PYG{p}{\PYGZcb{}}
+		\PYG{k}{return} \PYG{n}{i}\PYG{p}{;}
+	\PYG{p}{\PYGZcb{}}
+\end{Verbatim}

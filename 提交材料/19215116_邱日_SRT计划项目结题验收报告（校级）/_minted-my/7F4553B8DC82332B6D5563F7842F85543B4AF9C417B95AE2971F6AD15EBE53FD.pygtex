@@ -1,0 +1,10 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+	\PYG{k}{struct} \PYG{n}{file}
+	\PYG{p}{\PYGZob{}}
+		\PYG{n}{u8} \PYG{n}{f\PYGZus{}mode}\PYG{p}{;}			        \PYG{c+cm}{/*文件读写模式及权限管理*/}
+		\PYG{n}{u8} \PYG{n}{f\PYGZus{}flags}\PYG{p}{;}
+		\PYG{n}{u16} \PYG{n}{f\PYGZus{}count}\PYG{p}{;}			    \PYG{c+cm}{/*file引用次数*/}
+		\PYG{k}{struct} \PYG{n}{m\PYGZus{}inode} \PYG{o}{*} \PYG{n}{f\PYGZus{}inode}\PYG{p}{;}	\PYG{c+cm}{/*指向活动inode表中文件的inode*/}
+		\PYG{n}{u32} \PYG{n}{f\PYGZus{}pos}\PYG{p}{;}
+	\PYG{p}{\PYGZcb{};}
+\end{Verbatim}

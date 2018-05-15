@@ -1,0 +1,83 @@
+% XeLaTeX编译，编译参考文献引用等需两次编译。
+\documentclass[openright,oneside]{ctexbook}	% 加[draft]选项可不显示图片本体，加快编译，全文完成后再删除
+\input{package.tex}
+
+
+
+\begin{document}
+
+	\makeatletter
+	\def\@cite#1#2{\textsuperscript{[{#1\if@tempswa , #2\fi}]}}				%% 以上2行 - 把引用改上标；
+	\makeatother
+
+\input{cover}
+
+\vspace{2\baselineskip}
+
+{\renewcommand\baselinestretch{1}\selectfont
+\tableofcontents \par } \pagenumbering{Roman}	\addcontentsline{toc}{chapter}{目录}	\clearpage
+
+
+\input{abstract} 
+
+\zihao{-4} \songti	
+
+\pagenumbering{arabic} % 阿拉伯数字页码
+% \usepackage{minted}
+
+\input{Chap1} 
+
+% \include{Chap2} 
+
+% \include{Chap3} 
+
+% \include{Chap4} 
+
+% \include{Chap5} 
+
+% \include{Chap6} 
+
+% \include{Chap7} 
+
+% \include{Chap8}
+\addcontentsline{toc}{chapter}{参考文献}
+\zihao{5}
+
+%% \bibliographystyle{gbt7714-2005}
+%% \bibliography{my.bib}
+
+%%完成后再改成thebib...
+\begin{thebibliography}{99}
+% \bibitem{ck1} Crosby M J, Karnopp D C. System for controlling the transmission of energy between spaced members: U.S. Patent 3,807,678[P]. 1974-4-30.
+% \bibitem{ck2} Crosby M J, Karnopp D C. System for controlling the transmission of energy between spaced members: U.S. Patent 3,807,678[P]. 1974-4-30.
+% \bibitem{ck3} Crosby M J, Karnopp D C. System for controlling the transmission of energy between spaced members: U.S. Patent 3,807,678[P]. 1974-4-30.
+% \bibitem{ck1}Andrew S. Tanenbaum, Albert Woodhull. Operating Systems: Design and Implementation[M]
+\bibitem{ck1}Kaiming He, Xiangyu Zhang, Shaoqing Ren, Jian Sun，Deep Residual Learning for Image Recognition，arXiv:1512.03385
+% \bibitem{ck2}John Wiley, Sons, Silberschatz A. Operating Systems Concepts[M].9th ed.[s.l.]:2013.
+% \bibitem{ck3}Stalling W.Operating Systems:Internals and Design Principle[M].7th ed.
+% \bibitem{ck4}Tanenbaum A S.Modern Operating Systems[M].3rd ed. [s.l.]:Prentice Hall,2008.
+% \bibitem{ck5}赵炯 Linux内核完全注释修正版v3.0[M]
+% \bibitem{ck6}李善平、刘文峰、王伟波、王焕龙、李程远《Linux内核2.4版源代码分析大全》2002年
+% \bibitem{ck7}Andrew S. Tanenbaum(荷), 陈向群、马洪兵等译.现代操作系统[M]
+% \bibitem{ck8}x86汇编语言从实模式到保护模式 李忠, 王晓波, 余洁著 电子工业出版社 2013.01
+% \bibitem{ck9}郑阿奇、孙承龙 Linux内核精析 [M]电子工业出版社,2013.02
+% \bibitem{ck10}蒲晓蓉. 操作系统原理与Linux实例设计[M] 电子工业出版社,2014
+% \bibitem{ck11}于渊. Orange S：一个操作系统的实现[M]电子工业出版社 2009.6.1
+% \bibitem{ck12}William Stallings(美). Operating systems:internals and design principles精髓与设计原理[M]北京:电子工业出版社,2013.07
+% \bibitem{ck13}Linus早期Linux内核源码(Linux0.11). https://github.com/yuanxinyu/Linux-0.11
+% \bibitem{ck14}国外用于教学目的的类Unix操作系统xv6源码(含文档)https://github.com/leenjewel/xv6\_learn
+% \bibitem{ck15}xv6在Ubuntu上较容易编译的版本:https://github.com/Benezia/OS172\_Ass3 
+% \bibitem{ck16}https://wiki.osdev.org/Main\_Page
+% \bibitem{ck17}ucore实验及学堂在线相关资料. https://github.com/chyyuu/ucore\_os\_lab
+% \bibitem{ck18}https://pdos.csail.mit.edu/6.828/2016/xv6.html
+% \bibitem{ck19}中文版xv6文档.https://github.com/ranxian/xv6-chinese
+% \bibitem{ck20}《X86汇编语言-从实模式到保护模式》书后配套代码. https://github.com/lichuang/x86-asm-book-source
+% \bibitem{ck21}《ORANGE’S：一个操作系统的实现》书后源码. https://github.com/wlmnzf/oranges
+% \bibitem{ck22}Makefile编写手册 GNU make manual: https://www.gnu.org/software/make/manual/make.html
+% \bibitem{ck23}键盘扫描码相关: https://github.com/willdurand/willOS
+% \bibitem{ck24}文件和目录操作的系统函数简介: https://www.cnblogs.com/biyeymyhjob/archive/2012/07/26/2609649.html
+% \bibitem{ck25}软硬链接的介绍: https://www.ibm.com/developerworks/cn/linux/l-cn-hardandsymb-links/index.html
+
+\end{thebibliography}
+
+\end{document}

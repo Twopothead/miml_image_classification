@@ -1,0 +1,13 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{k+kt}{void} \PYG{n+nf}{set\PYGZus{}interrupt\PYGZus{}gate}\PYG{p}{(}\PYG{k}{struct} \PYG{n}{GATE\PYGZus{}DESCRPTOR} \PYG{o}{*}\PYG{n}{descr}\PYG{p}{,} \PYG{n}{u16} \PYG{n}{index} \PYG{p}{,}\PYG{n}{u32} \PYG{n}{offset}\PYG{p}{,} \PYG{n}{u8} \PYG{n}{dpl}\PYG{p}{)}
+\PYG{p}{\PYGZob{}}
+\PYG{n}{descr}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{offset\PYGZus{}lowerbits} \PYG{o}{=} \PYG{n}{offset} \PYG{o}{\PYGZam{}} \PYG{l+m+mh}{0xffff}\PYG{p}{;}
+\PYG{n}{descr}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{selector} \PYG{o}{=} \PYG{n}{index} \PYG{o}{\PYGZlt{}\PYGZlt{}} \PYG{l+m+mi}{3}\PYG{p}{;}\PYG{c+cm}{/*the lower 3 bits is TI(2) and RPI(0,1)*/}
+\PYG{n}{descr}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{zero} \PYG{o}{=} \PYG{l+m+mh}{0x00}\PYG{p}{;}
+\PYG{n}{descr}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{seg\PYGZus{}type} \PYG{o}{=} \PYG{n}{Gate\PYGZus{}INTERRUPT\PYGZus{}TYPE}\PYG{p}{;}\PYG{c+cm}{/*0x0E*/}
+\PYG{n}{descr}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{storage} \PYG{o}{=} \PYG{l+m+mi}{0}\PYG{n}{b0}\PYG{p}{;}
+\PYG{n}{descr}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{descr\PYGZus{}privilege\PYGZus{}level} \PYG{o}{=} \PYG{n}{dpl}\PYG{p}{;}
+\PYG{n}{descr}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{present} \PYG{o}{=}\PYG{l+m+mi}{0}\PYG{n}{b1}\PYG{p}{;}
+\PYG{n}{descr}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{offset\PYGZus{}higherbits} \PYG{o}{=} \PYG{p}{(}\PYG{n}{offset} \PYG{o}{\PYGZam{}} \PYG{l+m+mh}{0xffff0000}\PYG{p}{)} \PYG{o}{\PYGZgt{}\PYGZgt{}} \PYG{l+m+mi}{16}\PYG{p}{;}
+\PYG{p}{\PYGZcb{}}
+\end{Verbatim}

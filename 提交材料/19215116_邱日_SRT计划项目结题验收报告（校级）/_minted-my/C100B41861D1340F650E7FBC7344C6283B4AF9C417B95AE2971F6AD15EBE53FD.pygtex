@@ -1,0 +1,50 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{k+kt}{int} \PYG{n+nf}{new\PYGZus{}block}\PYG{p}{()}
+\PYG{p}{\PYGZob{}}
+	\PYG{k}{union} \PYG{n}{Super\PYGZus{}Block\PYGZus{}Sect} \PYG{o}{*}\PYG{n}{p\PYGZus{}ri\PYGZus{}sb} \PYG{o}{=} \PYG{n}{get\PYGZus{}super}\PYG{p}{();}
+	\PYG{n}{set\PYGZus{}super}\PYG{p}{();}
+	\PYG{k}{if}\PYG{p}{(}\PYG{o}{!}\PYG{n}{is\PYGZus{}specific\PYGZus{}block\PYGZus{}set}\PYG{p}{)\PYGZob{}}
+\PYG{c+cm}{/*initially, the first( counting from 1 ) data block is allocated for specific block.*/}
+		\PYG{n}{p\PYGZus{}ri\PYGZus{}sb}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{s\PYGZus{}specific\PYGZus{}blk\PYGZus{}nr} \PYG{o}{=} \PYG{l+m+mi}{1}\PYG{p}{;}\PYG{n}{set\PYGZus{}super}\PYG{p}{();}\PYG{c+cm}{/*write back to disk*/}
+		\PYG{n}{specific\PYGZus{}block} \PYG{o}{=} \PYG{n}{get\PYGZus{}blk\PYGZus{}nr\PYGZus{}free\PYGZus{}group}\PYG{p}{(}\PYG{n}{p\PYGZus{}ri\PYGZus{}sb}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{s\PYGZus{}specific\PYGZus{}blk\PYGZus{}nr}\PYG{p}{);}
+		\PYG{n}{is\PYGZus{}specific\PYGZus{}block\PYGZus{}set} \PYG{o}{=} \PYG{l+m+mi}{1}\PYG{p}{;}
+	\PYG{p}{\PYGZcb{}}
+\PYG{c+cm}{/* remember to write back to disk. */}
+\PYG{n+nl}{again}\PYG{p}{:}
+	\PYG{k}{if}\PYG{p}{(}\PYG{n}{specific\PYGZus{}block}\PYG{p}{.}\PYG{n}{s\PYGZus{}free} \PYG{o}{\PYGZgt{}} \PYG{l+m+mi}{1}\PYG{p}{)\PYGZob{}}
+		\PYG{n}{specific\PYGZus{}block}\PYG{p}{.}\PYG{n}{s\PYGZus{}free} \PYG{o}{\PYGZhy{}\PYGZhy{}}\PYG{p}{;}
+		\PYG{n}{set\PYGZus{}specific\PYGZus{}blk\PYGZus{}nr}\PYG{p}{(}\PYG{n}{p\PYGZus{}ri\PYGZus{}sb}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{s\PYGZus{}specific\PYGZus{}blk\PYGZus{}nr}\PYG{p}{);}\PYG{c+cm}{/*write back*/}
+		\PYG{n}{set\PYGZus{}blk\PYGZus{}nr\PYGZus{}free\PYGZus{}group}\PYG{p}{(}\PYG{n}{specific\PYGZus{}block}\PYG{p}{,}\PYG{n}{p\PYGZus{}ri\PYGZus{}sb}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{s\PYGZus{}specific\PYGZus{}blk\PYGZus{}nr}\PYG{p}{);}
+		\PYG{k}{return} \PYG{n}{specific\PYGZus{}block}\PYG{p}{.}\PYG{n}{s\PYGZus{}free\PYGZus{}blk\PYGZus{}nr}\PYG{p}{[}\PYG{n}{specific\PYGZus{}block}\PYG{p}{.}\PYG{n}{s\PYGZus{}free}\PYG{p}{];}
+	\PYG{p}{\PYGZcb{}}\PYG{k}{else} \PYG{k}{if}\PYG{p}{(}\PYG{n}{specific\PYGZus{}block}\PYG{p}{.}\PYG{n}{s\PYGZus{}free} \PYG{o}{==} \PYG{l+m+mi}{1}\PYG{p}{)\PYGZob{}}
+		\PYG{n}{specific\PYGZus{}block}\PYG{p}{.}\PYG{n}{s\PYGZus{}free} \PYG{o}{\PYGZhy{}\PYGZhy{}}\PYG{p}{;}
+		\PYG{k+kt}{int} \PYG{n}{current\PYGZus{}group\PYGZus{}nr} \PYG{o}{=} \PYG{n}{p\PYGZus{}ri\PYGZus{}sb}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{s\PYGZus{}specific\PYGZus{}blk\PYGZus{}nr}\PYG{p}{;}
+		\PYG{k+kt}{int} \PYG{n}{next\PYGZus{}group\PYGZus{}nr} \PYG{o}{=} \PYG{n}{specific\PYGZus{}block}\PYG{p}{.}\PYG{n}{s\PYGZus{}free\PYGZus{}blk\PYGZus{}nr}\PYG{p}{[}\PYG{l+m+mi}{0}\PYG{p}{];}
+\PYG{c+cm}{/* get NR of next group,copy its contents to specific block in memory through buffer}
+\PYG{c+cm}{ * , and **allocate current block**.}
+\PYG{c+cm}{ */}
+		\PYG{n}{specific\PYGZus{}block} \PYG{o}{=} \PYG{n}{get\PYGZus{}blk\PYGZus{}nr\PYGZus{}free\PYGZus{}group}\PYG{p}{(}\PYG{n}{next\PYGZus{}group\PYGZus{}nr}\PYG{p}{);}
+		\PYG{n}{set\PYGZus{}specific\PYGZus{}blk\PYGZus{}nr}\PYG{p}{(}\PYG{n}{next\PYGZus{}group\PYGZus{}nr}\PYG{p}{);}
+\PYG{c+cm}{/* now, we are switching to a different specific block*/}
+		\PYG{n}{specific\PYGZus{}block}\PYG{p}{.}\PYG{n}{s\PYGZus{}free} \PYG{o}{\PYGZhy{}\PYGZhy{}}\PYG{p}{;}
+\PYG{c+cm}{/* XX return specific\PYGZus{}block.s\PYGZus{}free\PYGZus{}blk\PYGZus{}nr[specific\PYGZus{}block.s\PYGZus{}free];}
+\PYG{c+cm}{ * ok,we were able to return NR here,but in that case,the following code won\PYGZsq{}t execute,}
+\PYG{c+cm}{ * and the last specific block haven\PYGZsq{}t been allocated.}
+\PYG{c+cm}{ */}
+		\PYG{k+kt}{int} \PYG{n}{tmp} \PYG{o}{=} \PYG{n}{specific\PYGZus{}block}\PYG{p}{.}\PYG{n}{s\PYGZus{}free\PYGZus{}blk\PYGZus{}nr}\PYG{p}{[}\PYG{n}{specific\PYGZus{}block}\PYG{p}{.}\PYG{n}{s\PYGZus{}free}\PYG{p}{];}
+		\PYG{p}{\PYGZob{}}\PYG{c+cm}{/* allocate the last specific block */}
+			\PYG{n}{specific\PYGZus{}block}\PYG{p}{.}\PYG{n}{s\PYGZus{}free\PYGZus{}blk\PYGZus{}nr}\PYG{p}{[}\PYG{n}{specific\PYGZus{}block}\PYG{p}{.}\PYG{n}{s\PYGZus{}free}\PYG{p}{]} \PYG{o}{=} \PYG{n}{current\PYGZus{}group\PYGZus{}nr}\PYG{p}{;}
+			\PYG{n}{specific\PYGZus{}block}\PYG{p}{.}\PYG{n}{s\PYGZus{}free} \PYG{o}{++}\PYG{p}{;}
+		\PYG{p}{\PYGZcb{}}
+		\PYG{k}{if}\PYG{p}{(}\PYG{n}{tmp}\PYG{o}{!=}\PYG{l+m+mi}{0}\PYG{p}{)\PYGZob{}}
+\PYG{c+cm}{/*write back*/}
+			\PYG{n}{set\PYGZus{}blk\PYGZus{}nr\PYGZus{}free\PYGZus{}group}\PYG{p}{(}\PYG{n}{specific\PYGZus{}block}\PYG{p}{,}\PYG{n}{p\PYGZus{}ri\PYGZus{}sb}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{s\PYGZus{}specific\PYGZus{}blk\PYGZus{}nr}\PYG{p}{);}
+			\PYG{k}{return} \PYG{n}{tmp}\PYG{p}{;}
+		\PYG{p}{\PYGZcb{}}\PYG{k}{else}\PYG{p}{\PYGZob{}}\PYG{c+cm}{/*SHOULD NOT allocate root*/}
+			\PYG{k}{goto} \PYG{n}{again}\PYG{p}{;}
+		\PYG{p}{\PYGZcb{}}
+	\PYG{p}{\PYGZcb{}}\PYG{k}{else} \PYG{k}{if}\PYG{p}{(}\PYG{n}{specific\PYGZus{}block}\PYG{p}{.}\PYG{n}{s\PYGZus{}free} \PYG{o}{==} \PYG{l+m+mi}{0}\PYG{p}{)\PYGZob{}}
+		\PYG{n}{\PYGZus{}panic}\PYG{p}{(}\PYG{l+s}{\PYGZdq{} FBI WARNING:There is no free block available!!!\PYGZdq{}}\PYG{p}{);}
+	\PYG{p}{\PYGZcb{}}
+\PYG{p}{\PYGZcb{}}
+\end{Verbatim}

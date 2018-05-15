@@ -1,0 +1,7 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{k}{struct} \PYG{n}{GDT\PYGZus{}pointer}
+\PYG{p}{\PYGZob{}}
+\PYG{n}{u16} \PYG{n}{limit}\PYG{p}{;}
+\PYG{n}{u32} \PYG{n}{base}\PYG{p}{;}
+\PYG{p}{\PYGZcb{}} \PYG{n}{\PYGZus{}\PYGZus{}attribute\PYGZus{}\PYGZus{}}\PYG{p}{((}\PYG{n}{packed}\PYG{p}{));}
+\end{Verbatim}

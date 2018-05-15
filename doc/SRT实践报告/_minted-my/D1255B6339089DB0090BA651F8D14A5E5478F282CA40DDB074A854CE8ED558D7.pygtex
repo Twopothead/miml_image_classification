@@ -1,0 +1,10 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{c+c1}{\PYGZsh{} 首先插入U盘}
+df \PYGZhy{}h \PYG{c+c1}{\PYGZsh{} U盘是/dev/sdb}
+sudo mount /dev/sdb /mnt \PYG{c+c1}{\PYGZsh{}挂载U盘到/mnt}
+mkdir /mnt/boot
+sudo grub\PYGZhy{}install \PYGZhy{}\PYGZhy{}root\PYGZhy{}directory\PYG{o}{=}/mnt /dev/sdb
+\PYG{c+c1}{\PYGZsh{}出现提示错误信息 grub\PYGZhy{}install: error: will not proceed with blocklists.}
+\PYG{c+c1}{\PYGZsh{}不管他，强制 块列表是不可信赖的,不推荐使用。问题依旧,输入一下指令,强制写入。}
+sudo grub\PYGZhy{}install \PYGZhy{}\PYGZhy{}force \PYGZhy{}\PYGZhy{}root\PYGZhy{}directory\PYG{o}{=}/mnt /dev/sdb
+\end{Verbatim}
