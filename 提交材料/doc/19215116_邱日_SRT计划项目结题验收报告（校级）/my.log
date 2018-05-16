@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.14159265-2.6-0.99998 (TeX Live 2017/Debian) (preloaded format=xelatex 2018.4.15)  11 MAY 2018 22:24
+This is XeTeX, Version 3.14159265-2.6-0.99998 (TeX Live 2017/Debian) (preloaded format=xelatex 2018.4.15)  16 MAY 2018 07:40
 entering extended mode
  \write18 enabled.
  %&-line parsing enabled.
@@ -2555,9 +2555,7 @@ Package microtype Info: Loading generic protrusion settings for font family
 (microtype)             `FandolFang-Regular' (encoding: TU).
 (microtype)             For optimal results, create family-specific settings.
 (microtype)             See the microtype manual for details.
- [2
 
-])
 *************************************************
 * fontspec warning: "script-not-exist"
 * 
@@ -2576,7 +2574,9 @@ Package microtype Info: Loading generic protrusion settings for font family
 . - 'bold' (bx/n) with NFSS spec.: <->"[FandolSong-Bold.otf]/OT"
 . - 'bold small caps'  (bx/sc) with NFSS spec.: 
 .................................................
-(./Chap1.tex
+[2
+
+] [3]) (./Chap1.tex
 第\nobreakspace {}1\nobreakspace {}章
 
 LaTeX Font Warning: Font shape `TU/FandolFang-Regular(0)/bx/n' undefined
@@ -2618,14 +2618,20 @@ File: pic/assets/pretrained.png Graphic file (type bmp)
 File: pic/assets/vgg16_modified.png Graphic file (type bmp)
 <pic/assets/vgg16_modified.png>
  [7] [8] [9]) [10] [11]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 83.
- [12
+Underfull \hbox (badness 10000) in paragraph at lines 65--67
+[]\TU/TimesNewRoman(0)/m/n/10.53937 Wei Liu, Dragomir Anguelov, Dumitru Erhan, 
+SSD: Single Shot MultiBox Detec-
+ []
+
+[12
 
 ]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 83.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 96.
+ [13]
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 96.
  (./my.aux)
-Package atveryend Info: Empty hook `AtVeryEndDocument' on input line 83.
-Package atveryend Info: Empty hook `AtEndAfterFileList' on input line 83.
+Package atveryend Info: Empty hook `AtVeryEndDocument' on input line 96.
+Package atveryend Info: Empty hook `AtEndAfterFileList' on input line 96.
 
 
 LaTeX Font Warning: Some font shapes were not available, defaults substituted.
@@ -2634,12 +2640,12 @@ runsystem(rm my.pyg)...executed.
 
  ) 
 Here is how much of TeX's memory you used:
- 38494 strings out of 494530
- 774118 string characters out of 6166160
- 863834 words of memory out of 5000000
- 41841 multiletter control sequences out of 15000+600000
+ 38625 strings out of 494530
+ 779077 string characters out of 6166160
+ 865560 words of memory out of 5000000
+ 41972 multiletter control sequences out of 15000+600000
  545673 words of font info for 120 fonts, out of 8000000 for 9000
  264 hyphenation exceptions out of 8191
- 57i,12n,74p,10437b,858s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 57i,12n,74p,10437b,974s stack positions out of 5000i,500n,10000p,200000b,80000s
 
-Output written on my.pdf (15 pages).
+Output written on my.pdf (17 pages).
